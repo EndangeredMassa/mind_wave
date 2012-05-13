@@ -145,7 +145,9 @@
   };
 
   getDanger = function() {
-    return 1 - (lastMeditationScore / 100.0);
+    var danger;
+    danger = lastMeditationScore / 100.0;
+    return 1 - danger * danger;
   };
 
   addLine = function() {
