@@ -6,8 +6,8 @@ playerSprites = null
 playerAnim = null
 stage = null
 currentKey = null
-charWidth = 15
-lineWidth = 41
+charWidth = 18
+lineWidth = 33
 gravity = 300
 lastAttentionScore = 0
 lastMeditationScore = 0
@@ -15,11 +15,10 @@ score = 0
 stop = false
 charts = []
 
-story = """
-"I admit," said he - when I mentioned to him this objection - "I admit the truth of your critic\'s facts, but I deny his conclusions. It is true that we have really in Flatland a Third unrecognized Dimension called 'height,' just as it is also true that you have really in Spaceland a Fourth unrecognized Dimension, called by no name at present, but which I will call 'extra-height'. But we can no more take cognizance of our 'height' then you can of your 'extra-height'. Even I - who have been in Spaceland, and have had the privilege of understanding for twenty-four hours the meaning of \'height\' - even I cannot now comprehend it, nor realize it by the sense of sight or by any process of reason; I can but apprehend it by faith. "The reason is obvious. Dimension implies direction, implies measurement, implies the more and the less. Now, all our lines are equally and infinitesimally thick (or high, whichever you like); consequently, there is nothing in them to lead our minds to the conception of that Dimension. No 'delicate micrometer' - as has been suggested by one too hasty Spaceland critic - would in the least avail us; for we should not know what to measure, nor in what direction. When we see a Line, we see something that is long and bright; brightness, as well as length, is necessary to the existence of a Line; if the brightness vanishes, the Line is extinguished. Hence, all my Flatland friends - when I talk to them about the unrecognized Dimension which is somehow visible in a Line - say, 'Ah, you mean brightness': and when I reply, 'No, I mean a real Dimension,' they at once retort 'Then measure it, or tell us in what direction it extends'; and this silences me, for I can do neither. Only yesterday, when the Chief Circle (in other words our High Priest) came to inspect the State Prison and paid me his seventh annual visit, and when for the seventh time he put me the question, 'Was I any better?' I tried to prove to him that he was 'high,' as well as long and broad, although he did not know it. But what was his reply? 'You say I am "high"; measure my "highness" and I will believe you.' What could I do? How could I meet his challenge? I was crushed; and he left the room triumphant. "Does this still seem strange to you? Then put yourself in a similar position. Suppose a person of the Fourth Dimension, condescending to visit you, were to say, `Whenever you open your eyes, you see a Plane (which is of Two Dimensions) and you infer a Solid (which is of Three); but in reality you also see (though you do not recognize) a Fourth Dimension, which is not colour nor brightness nor anything of the kind, but a true Dimension, although I cannot point out to you its direction, nor can you possibly measure it.' What would you say to such a visitor? Would not you have him locked up? Well, that is my fate: and it is as natural for us Flatlanders to lock up a Square for preaching the Third Dimension, as it is for you Spacelanders to lock up a Cube for preaching the Fourth. Alas, how strong a family likeness runs through blind and persecuting humanity in all Dimensions! Points, Lines, Squares, Cubes, Extra- Cubes - we are all liable to the same errors, all alike the Slaves of our respective Dimensional prejudices, as one of your Spaceland poets has said - 'One touch of Nature makes all worlds akin'."
-"""
+story = ''
 storyPosition = 0
-maxStoryPosition = storyPosition.length - 1
+maxStoryPosition = 0
+
 
 $ = (id) ->
   document.getElementById id
@@ -68,7 +67,6 @@ runGame = ->
 
     playerSprites = new SpriteSheet(spriteData)
     player = new BitmapAnimation(playerSprites)
-#    player = new Bitmap(SpriteSheetUtils.extractFrame(player, 'idle'))
     buildInterfaceIfReady()
 
   canvas = $('game')
@@ -90,7 +88,6 @@ buildInterfaceIfReady = ->
   Ticker.useRAF = true
   Ticker.setInterval 17
 
-
 getDifficulty = ->
   lastAttentionScore / 100.0
 
@@ -104,7 +101,7 @@ addLine = ->
 
 renderLine = (y, gapPosition, gapSize) ->
   leftWidth = gapPosition
-  rightX = (gapPosition + gapSize) * charWidth
+  rightX = (gapPosition + gapSize + 1) * charWidth
   rightWidth = lineWidth - leftWidth - gapSize
 
   leftBar = addBar(0, y, leftWidth)
@@ -115,25 +112,25 @@ renderLine = (y, gapPosition, gapSize) ->
 addBar = (x, y, width) ->
   text = story.substr(storyPosition, width)
   storyPosition += width
+  rest = story.substr(storyPosition)
+  $('text').innerText = rest
   if storyPosition >= maxStoryPosition
     storyPosition = 0
 
-  bar = new Text(text, "30px bold 'Courier New'", "#FFFFFF")
+  bar = new Text(text, "30px bold 'Courier New'", "#FFF")
   bar.x = x
   bar.y = y
   bar.width = width
   bar.height = 24
-  stage.addChild(bar)
 
   rect = new Shape()
-  rect.graphics.setStrokeStyle(4)
-  rect.graphics.beginFill(Graphics.getRGB(0,255,0,0.5))
-  rect.graphics.beginStroke(Graphics.getRGB(0,255,0,1.0))
-  rect.graphics.rect(0, 0, bar.getMeasuredWidth(), bar.height + 8)
-  rect.alpha = 0.5
+  rect.graphics.beginFill(Graphics.getRGB(0,0,0))
+  rect.graphics.rect(0, 0, bar.getMeasuredWidth(), bar.height + 5)
   rect.x = bar.x
   rect.y = bar.y - bar.height
+
   stage.addChild(rect)
+  stage.addChild(bar)
 
   { bar: bar, rect: rect }
 
@@ -142,15 +139,23 @@ window.addEventListener 'keydown', (e) ->
 
 gameOver = ->
   gameOverText = new Text('GAME OVER', '80px bold "Courier New"', '#F00')
-  gameOverText.x = 100
-  gameOverText.y = 300
-  stage.addChild(gameOverText)
+  gameOverText.x = 90
+  gameOverText.y = 280
 
+  rect = new Shape()
+  rect.graphics.beginFill(Graphics.getRGB(0,0,0))
+  rect.graphics.rect(0, 0, 500, 500)
+  rect.alpha = 0.9
+  rect.x = 50
+  rect.y = 50
 
-  gameOverText = new Text("SCORE: #{score}", '60px bold "Courier New"', '#F00')
-  gameOverText.x = 120
-  gameOverText.y = 400
+  scoreText = new Text("SCORE: #{score}", '60px bold "Courier New"', '#F00')
+  scoreText.x = 100
+  scoreText.y = 400
+
+  stage.addChild(rect)
   stage.addChild(gameOverText)
+  stage.addChild(scoreText)
 
   stage.update()
 
@@ -261,8 +266,11 @@ window.tick = (elapsedMs) ->
   stage.update()
 
 window.onload = ->
-  attention = createSeries($("attention"), 'Attention', { r: 255, g: 0, b: 0 })
-  meditation = createSeries($("meditation"), 'Meditation', { r: 0, g: 0, b: 255 })
+  story = $('text').innerText
+  maxStoryPosition = story.length - 1
+
+  attention = createSeries($("attention"), 'Attention', { r: 70, g: 70, b: 70 })
+  meditation = createSeries($("meditation"), 'Meditation', { r: 125, g: 125, b: 125 })
 
   host = window.location.host
   socket = io.connect("http://#{host}")
