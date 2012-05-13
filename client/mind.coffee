@@ -32,7 +32,7 @@ SmoothieChart.prototype.render = (canvas, time) ->
   parentRender.call this, canvas, time, () ->
     attentionContext = canvas.getContext('2d')
     attentionContext.save()
-    if this.title
+    if that.title
       attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif'
       attentionContext.fillStyle = '#555555'
       attentionContext.fillText(that.title, 250, 100)
@@ -97,7 +97,7 @@ getDanger = ->
 
 addLine = ->
   difficulty = getDifficulty()
-  gap = parseInt(difficulty * 8 + 6, 10)
+  gap = parseInt(difficulty * 6 + 4, 10)
   renderLine(600, rand(1,20), gap)
 
 renderLine = (y, gapPosition, gapSize) ->

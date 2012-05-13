@@ -56,7 +56,7 @@
       var attentionContext;
       attentionContext = canvas.getContext('2d');
       attentionContext.save();
-      if (this.title) {
+      if (that.title) {
         attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif';
         attentionContext.fillStyle = '#555555';
         attentionContext.fillText(that.title, 250, 100);
@@ -151,7 +151,7 @@
   addLine = function() {
     var difficulty, gap;
     difficulty = getDifficulty();
-    gap = parseInt(difficulty * 8 + 6, 10);
+    gap = parseInt(difficulty * 6 + 4, 10);
     return renderLine(600, rand(1, 20), gap);
   };
 
