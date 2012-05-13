@@ -1,5 +1,5 @@
 (function() {
-  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getKey, gravity, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, player, rand, runGame, stage;
+  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getKey, gravity, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, runGame, stage;
 
   moveSpeed = 0;
 
@@ -25,21 +25,29 @@
     return document.getElementById(id);
   };
 
-  rand = function(min, max) {
-    return parseInt(Math.random() * max + min, 10);
+  parentRender = SmoothieChart.prototype.render;
+
+  SmoothieChart.prototype.render = function(canvas, time) {
+    var attentionContext;
+    parentRender.call(this, canvas, time);
+    attentionContext = canvas.getContext('2d');
+    attentionContext.save();
+    attentionContext.fillStyle = 'rgb(0,0,0,1.0)';
+    attentionContext.fillText(this.title, 0, 50);
+    return attentionContext.restore();
   };
 
-  createSeries = function(canvas) {
-    var b, g, r, smoothie, ts;
-    r = rand(0, 255);
-    g = rand(0, 255);
-    b = rand(0, 255);
+  createSeries = function(canvas, title, color) {
+    var context, smoothie, ts;
+    context = canvas.getContext('2d');
+    context.globalAlpha = 0.4;
     ts = new TimeSeries();
     smoothie = new SmoothieChart();
+    smoothie.title = title;
     smoothie.streamTo(canvas);
     smoothie.addTimeSeries(ts, {
-      strokeStyle: "rgb(" + r + ", " + g + ", " + b + ")",
-      fillStyle: "rgba(" + r + ", " + g + ", " + b + ", 0.4)",
+      strokeStyle: "rgb(" + color.r + ", " + color.g + ", " + color.b + ")",
+      fillStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.4)",
       lineWidth: 3
     });
     return ts;
@@ -74,7 +82,7 @@
     player.y = 0;
     player.width = 64;
     player.height = 64;
-    stage.addChild(bg, player);
+    stage.addChild(player);
     lines.push(addLine(600, rand(1, 20), rand(6, 12)));
     return stage.update();
   };
@@ -171,20 +179,28 @@
   };
 
   window.onload = function() {
-    var attention, highAlpha, host, lowAlpha, meditation, socket;
-    attention = createSeries($("attention"));
-    meditation = createSeries($("meditation"));
-    lowAlpha = createSeries($("low-alpha"));
-    highAlpha = createSeries($("high-alpha"));
+    var attention, host, meditation, socket, testCtx;
+    attention = createSeries($("attention"), 'Attention', {
+      r: 255,
+      g: 0,
+      b: 0
+    });
+    meditation = createSeries($("meditation"), 'Meditation', {
+      r: 0,
+      g: 0,
+      b: 255
+    });
+    testCtx = $('test').getContext('2d');
+    testCtx.fillRect(0, 0, $('test').width, $('test').height);
+    testCtx.strokeStyle = '#ffffff';
+    testCtx.strokeText('Test', 0, 1);
     host = window.location.host;
     socket = io.connect("http://" + host);
     socket.on("data", function(data) {
       var currentTime;
       currentTime = new Date().getTime();
       attention.append(currentTime, data.eSense.attention);
-      meditation.append(currentTime, data.eSense.meditation);
-      lowAlpha.append(currentTime, data.eegPower.lowAlpha);
-      return highAlpha.append(currentTime, data.eegPower.highAlpha);
+      return meditation.append(currentTime, data.eSense.meditation);
     });
     socket.on("moveSpeed", function(newMoveSpeed) {
       return moveSpeed = parseFloat(newMoveSpeed);
