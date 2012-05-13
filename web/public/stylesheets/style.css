@@ -6,3 +6,15 @@ a {
   color: #00B7FF;
 }
 
+.graph {
+  float: right;
+}
+
+canvas {
+  float: left;
+}
+
+h3 {
+  margin-bottom: 0px;
+}
+
