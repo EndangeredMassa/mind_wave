@@ -164,7 +164,7 @@
     var bar, rect, rest, text;
     text = story.substr(storyPosition, width);
     storyPosition += width;
-    rest = story.substr(storyPosition - 1);
+    rest = story.substr(storyPosition);
     $('text').innerText = rest;
     if (storyPosition >= maxStoryPosition) storyPosition = 0;
     bar = new Text(text, "30px bold 'Courier New'", "#FFF");
@@ -190,15 +190,22 @@
   });
 
   gameOver = function() {
-    var chart, gameOverText, _i, _len, _results;
+    var chart, gameOverText, rect, scoreText, _i, _len, _results;
     gameOverText = new Text('GAME OVER', '80px bold "Courier New"', '#F00');
-    gameOverText.x = 100;
-    gameOverText.y = 300;
+    gameOverText.x = 90;
+    gameOverText.y = 280;
+    rect = new Shape();
+    rect.graphics.beginFill(Graphics.getRGB(0, 0, 0));
+    rect.graphics.rect(0, 0, 500, 500);
+    rect.alpha = 0.9;
+    rect.x = 50;
+    rect.y = 50;
+    scoreText = new Text("SCORE: " + score, '60px bold "Courier New"', '#F00');
+    scoreText.x = 100;
+    scoreText.y = 400;
+    stage.addChild(rect);
     stage.addChild(gameOverText);
-    gameOverText = new Text("SCORE: " + score, '60px bold "Courier New"', '#F00');
-    gameOverText.x = 120;
-    gameOverText.y = 400;
-    stage.addChild(gameOverText);
+    stage.addChild(scoreText);
     stage.update();
     stop = true;
     Ticker.setPaused(true);
