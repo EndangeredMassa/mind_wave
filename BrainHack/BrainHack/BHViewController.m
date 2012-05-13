@@ -55,14 +55,14 @@ NSString *BHServerPortKey = @"BHServerPortKey";
 {
     self.motionMgr = [[CMMotionManager alloc] init];
     if (self.motionMgr.deviceMotionAvailable) {
-        self.motionMgr.deviceMotionUpdateInterval = 0.1666;
+        self.motionMgr.deviceMotionUpdateInterval = 0.01666;
         [self.motionMgr startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:
          ^(CMDeviceMotion *motion, NSError *err) {
              if (err) {
                  NSLog(@"Motion error: %@", err.localizedDescription);
                  return;
              }
-             double adjustedYaw = motion.attitude.pitch / M_PI_4;
+             double adjustedYaw = -motion.attitude.pitch / M_PI_4;
              adjustedYaw = adjustedYaw > 1.0 ? 1.0 : adjustedYaw;
              adjustedYaw = adjustedYaw < -1.0 ? -1.0 : adjustedYaw;
              
