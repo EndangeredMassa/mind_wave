@@ -25,6 +25,8 @@
     return document.getElementById(id);
   };
 
+  console.log = function() {};
+
   parentRender = SmoothieChart.prototype.render;
 
   SmoothieChart.prototype.render = function(canvas, time) {
@@ -32,7 +34,8 @@
     parentRender.call(this, canvas, time);
     attentionContext = canvas.getContext('2d');
     attentionContext.save();
-    attentionContext.fillStyle = 'rgb(0,0,0,1.0)';
+    attentionContext.font = '14px bold "Lucida Grande", Helvetica, Arial, sans-serif';
+    attentionContext.fillStyle = '#aaaaaa';
     attentionContext.fillText(this.title, 0, 50);
     return attentionContext.restore();
   };
@@ -40,14 +43,17 @@
   createSeries = function(canvas, title, color) {
     var context, smoothie, ts;
     context = canvas.getContext('2d');
-    context.globalAlpha = 0.4;
     ts = new TimeSeries();
-    smoothie = new SmoothieChart();
+    smoothie = new SmoothieChart({
+      labels: {
+        disabled: true
+      }
+    });
     smoothie.title = title;
     smoothie.streamTo(canvas);
     smoothie.addTimeSeries(ts, {
-      strokeStyle: "rgb(" + color.r + ", " + color.g + ", " + color.b + ")",
-      fillStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.4)",
+      strokeStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.25)",
+      fillStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.2)",
       lineWidth: 3
     });
     return ts;
@@ -179,7 +185,7 @@
   };
 
   window.onload = function() {
-    var attention, host, meditation, socket, testCtx;
+    var attention, host, meditation, socket;
     attention = createSeries($("attention"), 'Attention', {
       r: 255,
       g: 0,
@@ -190,10 +196,12 @@
       g: 0,
       b: 255
     });
-    testCtx = $('test').getContext('2d');
-    testCtx.fillRect(0, 0, $('test').width, $('test').height);
-    testCtx.strokeStyle = '#ffffff';
-    testCtx.strokeText('Test', 0, 1);
+    /*
+      testCtx = $('test').getContext('2d')
+      testCtx.fillRect(0, 0, $('test').width, $('test').height)
+      testCtx.strokeStyle = '#ffffff'
+      testCtx.strokeText('Test', 0, 1)
+    */
     host = window.location.host;
     socket = io.connect("http://" + host);
     socket.on("data", function(data) {
