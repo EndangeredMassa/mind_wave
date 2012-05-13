@@ -1,7 +1,6 @@
 moveSpeed = 0
 nextBar = 800
 lines = []
-bg = null
 player = null
 stage = null
 currentKey = null
@@ -10,6 +9,9 @@ lineWidth = 41
 gravity = 300
 lastAttentionScore = 0
 lastMeditationScore = 0
+score = 0
+stop = false
+charts = []
 
 $ = (id) ->
   document.getElementById id
@@ -38,16 +40,10 @@ createSeries = (canvas, title, color) ->
     strokeStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.25)"
     fillStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.2)"
     lineWidth: 3
+  charts.push(smoothie)
   ts
 
 runGame = ->
-  bgSrc = new Image()
-  bgSrc.src = "/images/bg.jpg"
-  bgSrc.name = "bg"
-  bgSrc.onload = ->
-    bg = new Bitmap(bgSrc)
-    buildInterfaceIfReady()
-
   playerSrc = new Image()
   playerSrc.src = "/images/player.png"
   playerSrc.name = "player1"
@@ -55,15 +51,16 @@ runGame = ->
     player = new Bitmap(playerSrc)
     buildInterfaceIfReady()
 
-  canvas = $("game")
+  canvas = $('game')
   stage = new Stage(canvas)
+
 
   Ticker.addListener window
   Ticker.useRAF = true
   Ticker.setInterval 17
 
 buildInterfaceIfReady = ->
-  return if !bg || !player
+  return if !player
   player.x = 0
   player.y = 0
   player.width = 64
@@ -106,6 +103,25 @@ addBar = (x, y, width) ->
 window.addEventListener 'keydown', (e) ->
   currentKey = e.keyCode
 
+gameOver = ->
+  gameOverText = new Text('GAME OVER', '80px bold "Courier New"', '#F00')
+  gameOverText.x = 100
+  gameOverText.y = 300
+  stage.addChild(gameOverText)
+
+
+  gameOverText = new Text("SCORE: #{score}", '60px bold "Courier New"', '#F00')
+  gameOverText.x = 120
+  gameOverText.y = 400
+  stage.addChild(gameOverText)
+
+  stage.update()
+
+  stop = true
+  Ticker.setPaused(true)
+  for chart in charts
+    chart.stop()
+
 getKey = ->
   return "left" if currentKey == 37
   "right" if currentKey == 39
@@ -127,6 +143,8 @@ movePlayerVertical = (leftBar, rightBar) ->
       return false
     else
       player.y -= diff
+      if player.y <= 0
+        gameOver()
       return true
   return false
 
@@ -163,12 +181,17 @@ createBars = (elapsed) ->
     nextBar = 800
     lines.push(addLine())
 
+updateScore = (elapsed) ->
+  score += parseInt(1000 * elapsed, 10)
+  $('score').innerText = "Score: #{score}"
+
 window.tick = (elapsedMs) ->
   elapsedSec = elapsedMs / 1000
   barVelocity = parseInt((getDanger() * 200 + 100) * elapsedSec, 10)
   moveBars(elapsedSec, barVelocity)
   movePlayerHorizontal(elapsedSec)
   createBars(elapsedMs)
+  updateScore(elapsedSec)
 
   stage.update()
 
@@ -179,6 +202,7 @@ window.onload = ->
   host = window.location.host
   socket = io.connect("http://#{host}")
   socket.on "data", (data) ->
+    return if stop
 
     lastAttentionScore = data.eSense.attention
     lastMeditationScore = data.eSense.meditation

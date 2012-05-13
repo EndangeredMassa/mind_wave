@@ -1,13 +1,11 @@
 (function() {
-  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, rand, renderLine, runGame, stage;
+  var $, addBar, addLine, buildInterfaceIfReady, charWidth, charts, createBars, createSeries, currentKey, gameOver, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, rand, renderLine, runGame, score, stage, stop, updateScore;
 
   moveSpeed = 0;
 
   nextBar = 800;
 
   lines = [];
-
-  bg = null;
 
   player = null;
 
@@ -24,6 +22,12 @@
   lastAttentionScore = 0;
 
   lastMeditationScore = 0;
+
+  score = 0;
+
+  stop = false;
+
+  charts = [];
 
   $ = function(id) {
     return document.getElementById(id);
@@ -62,18 +66,12 @@
       fillStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.2)",
       lineWidth: 3
     });
+    charts.push(smoothie);
     return ts;
   };
 
   runGame = function() {
-    var bgSrc, canvas, playerSrc;
-    bgSrc = new Image();
-    bgSrc.src = "/images/bg.jpg";
-    bgSrc.name = "bg";
-    bgSrc.onload = function() {
-      bg = new Bitmap(bgSrc);
-      return buildInterfaceIfReady();
-    };
+    var canvas, playerSrc;
     playerSrc = new Image();
     playerSrc.src = "/images/player.png";
     playerSrc.name = "player1";
@@ -81,7 +79,7 @@
       player = new Bitmap(playerSrc);
       return buildInterfaceIfReady();
     };
-    canvas = $("game");
+    canvas = $('game');
     stage = new Stage(canvas);
     Ticker.addListener(window);
     Ticker.useRAF = true;
@@ -89,7 +87,7 @@
   };
 
   buildInterfaceIfReady = function() {
-    if (!bg || !player) return;
+    if (!player) return;
     player.x = 0;
     player.y = 0;
     player.width = 64;
@@ -140,6 +138,27 @@
     return currentKey = e.keyCode;
   });
 
+  gameOver = function() {
+    var chart, gameOverText, _i, _len, _results;
+    gameOverText = new Text('GAME OVER', '80px bold "Courier New"', '#F00');
+    gameOverText.x = 100;
+    gameOverText.y = 300;
+    stage.addChild(gameOverText);
+    gameOverText = new Text("SCORE: " + score, '60px bold "Courier New"', '#F00');
+    gameOverText.x = 120;
+    gameOverText.y = 400;
+    stage.addChild(gameOverText);
+    stage.update();
+    stop = true;
+    Ticker.setPaused(true);
+    _results = [];
+    for (_i = 0, _len = charts.length; _i < _len; _i++) {
+      chart = charts[_i];
+      _results.push(chart.stop());
+    }
+    return _results;
+  };
+
   getKey = function() {
     if (currentKey === 37) return "left";
     if (currentKey === 39) return "right";
@@ -160,6 +179,7 @@
         return false;
       } else {
         player.y -= diff;
+        if (player.y <= 0) gameOver();
         return true;
       }
     }
@@ -198,6 +218,11 @@
     }
   };
 
+  updateScore = function(elapsed) {
+    score += parseInt(1000 * elapsed, 10);
+    return $('score').innerText = "Score: " + score;
+  };
+
   window.tick = function(elapsedMs) {
     var barVelocity, elapsedSec;
     elapsedSec = elapsedMs / 1000;
@@ -205,6 +230,7 @@
     moveBars(elapsedSec, barVelocity);
     movePlayerHorizontal(elapsedSec);
     createBars(elapsedMs);
+    updateScore(elapsedSec);
     return stage.update();
   };
 
@@ -224,6 +250,7 @@
     socket = io.connect("http://" + host);
     socket.on("data", function(data) {
       var currentTime;
+      if (stop) return;
       lastAttentionScore = data.eSense.attention;
       lastMeditationScore = data.eSense.meditation;
       currentTime = new Date().getTime();
