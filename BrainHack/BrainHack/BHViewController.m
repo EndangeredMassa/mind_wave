@@ -12,6 +12,7 @@
 
 NSString *BHServerIPAddrKey = @"BHServerIPAddrKey";
 NSString *BHServerPortKey = @"BHServerPortKey";
+NSString *BHWebPortKey = @"BHWebPortKey";
 
 @interface BHViewController ()
 
@@ -27,7 +28,9 @@ NSString *BHServerPortKey = @"BHServerPortKey";
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
                                 @"127.0.0.1", BHServerIPAddrKey,
-                                [NSNumber numberWithInt:8124], BHServerPortKey, nil]];
+                                [NSNumber numberWithInt:8124], BHServerPortKey,
+                                [NSNumber numberWithInt:80], BHWebPortKey,
+                                nil]];
 }
 
 - (NSString *)ipAddress
@@ -52,6 +55,18 @@ NSString *BHServerPortKey = @"BHServerPortKey";
     [defaults setValue:[NSNumber numberWithInt:port] forKey:BHServerPortKey];
 }
 
+- (int32_t)webPort
+{
+    NSNumber *num = [[NSUserDefaults standardUserDefaults] valueForKey:BHWebPortKey];
+    return num.intValue;
+}
+
+- (void)setWebPort:(int32_t)webPort
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setValue:[NSNumber numberWithInt:webPort] forKey:BHWebPortKey];
+}
+
 - (void)viewDidLoad
 {
     self.motionMgr = [[CMMotionManager alloc] init];
@@ -68,7 +83,7 @@ NSString *BHServerPortKey = @"BHServerPortKey";
              adjustedYaw = adjustedYaw < -1.0 ? -1.0 : adjustedYaw;
              
              if (_outStream.streamStatus == NSStreamStatusOpen) {
-#ifdef DEBUG
+#ifdef LOG_YAW
                  NSLog(@"Yaw val: %f", adjustedYaw);
 #endif
                  NSString *yawString = [NSString stringWithFormat:@"%f;", adjustedYaw];
@@ -106,6 +121,7 @@ NSString *BHServerPortKey = @"BHServerPortKey";
     dest.parent = self;
     dest.ipAddressField.text = self.ipAddress;
     dest.portField.text = [NSString stringWithFormat:@"%d", self.port];
+    dest.webPortField.text = [NSString stringWithFormat:@"%d", self.webPort];
 }
 
 - (void)startClient
@@ -118,7 +134,7 @@ NSString *BHServerPortKey = @"BHServerPortKey";
                                        self.port, &readStream, &writeStream);
     _outStream = (__bridge_transfer NSOutputStream *)writeStream;
     _inStream = (__bridge_transfer NSInputStream *)readStream;
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/", self.ipAddress]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%d/", self.ipAddress, self.webPort]];
     [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
     [_outStream open];
 }

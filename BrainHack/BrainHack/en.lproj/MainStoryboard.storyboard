@@ -83,7 +83,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="lhb-be-1Wd">
-                                <rect key="frame" x="130" y="98" width="170" height="37"/>
+                                <rect key="frame" x="130" y="137" width="170" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Connect">
@@ -97,6 +97,19 @@
                                     <action selector="connect:" destination="JFG-zU-tOj" eventType="touchUpInside" id="hF6-PN-bPJ"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="ukp-Km-7VM">
+                                <rect key="frame" x="130" y="98" width="170" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Web Port" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="jAx-dU-Udt">
+                                <rect key="frame" x="39" y="101" width="72" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -105,6 +118,7 @@
                     <connections>
                         <outlet property="ipAddressField" destination="sgU-2B-sk7" id="MLA-68-7DT"/>
                         <outlet property="portField" destination="eFx-Oj-U3K" id="MkI-bo-G3h"/>
+                        <outlet property="webPortField" destination="ukp-Km-7VM" id="hNH-Po-cm3"/>
                     </connections>
                 </viewController>
             </objects>
@@ -118,6 +132,7 @@
                 <relationship kind="action" name="connect:"/>
                 <relationship kind="outlet" name="ipAddressField" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="portField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="webPortField" candidateClass="UITextField"/>
             </relationships>
         </class>
         <class className="BHViewController" superclassName="UIViewController">

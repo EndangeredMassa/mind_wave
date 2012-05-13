@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *ipAddressField;
 @property (weak, nonatomic) IBOutlet UITextField *portField;
 @property (weak, nonatomic) UIPopoverController *popoverController;
+@property (weak, nonatomic) IBOutlet UITextField *webPortField;
 
 - (IBAction)connect:(id)sender;
 

@@ -19,6 +19,7 @@
 @synthesize ipAddressField = _ipAddressField;
 @synthesize portField = _portField;
 @synthesize popoverController;
+@synthesize webPortField = _webPortField;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -38,6 +39,7 @@
 {
     [self setIpAddressField:nil];
     [self setPortField:nil];
+    [self setWebPortField:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -51,10 +53,14 @@
 {
     [self.parent setIpAddress:self.ipAddressField.text];
     [self.parent setPort:[self.portField.text intValue]];
+    [self.parent setWebPort:[self.webPortField.text intValue]];
 }
 
 - (IBAction)connect:(id)sender {
     [self.popoverController dismissPopoverAnimated:YES];
+    [self.parent setIpAddress:self.ipAddressField.text];
+    [self.parent setPort:[self.portField.text intValue]];
+    [self.parent setWebPort:[self.webPortField.text intValue]];
     [self.parent startClient];
 }
 @end
