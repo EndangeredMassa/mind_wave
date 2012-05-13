@@ -259,7 +259,8 @@ updateScore = (elapsed) ->
 
 window.tick = (elapsedMs) ->
   elapsedSec = elapsedMs / 1000
-  barVelocity = parseInt((getDanger() * 400 + 100) * elapsedSec, 10)
+  barVelocity = parseInt((getDanger() * 500 + 50) * elapsedSec, 10)
+
   moveBars(elapsedSec, barVelocity)
   movePlayerHorizontal(elapsedSec)
   createBars(elapsedMs)
