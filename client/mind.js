@@ -1,23 +1,5 @@
 (function() {
-  var $, addBar, bars, bg, buildInterfaceIfReady, createSeries, currentKey, getKey, moveSpeed, nextBar, player, rand, runGame, stage;
-
-  moveSpeed = 0;
-
-  nextBar = 2500;
-
-  bars = [];
-
-  bg = null;
-
-  player = null;
-
-  stage = null;
-
-  currentKey = null;
-
-  $ = function(id) {
-    return document.getElementById(id);
-  };
+  var $, addBar, bars, bg, buildInterfaceIfReady, createSeries, currentKey, getKey, moveSpeed, nextBar, player, rand, runGame, stage, tick;
 
   rand = function(min, max) {
     return parseInt(Math.random() * max + min, 10);
@@ -39,13 +21,18 @@
     return ts;
   };
 
+  $ = function(id) {
+    return document.getElementById(id);
+  };
+
   runGame = function() {
-    var bgSrc, canvas, playerSrc;
-    canvas = null;
+    var bgSrc, canvas, playerSrc, stage;
+    canvas = void 0;
     bgSrc = new Image();
     bgSrc.src = "/images/bg.jpg";
     bgSrc.name = "bg";
     bgSrc.onload = function() {
+      var bg;
       bg = new Bitmap(bgSrc);
       return buildInterfaceIfReady();
     };
@@ -53,6 +40,7 @@
     playerSrc.src = "/images/player.png";
     playerSrc.name = "player1";
     playerSrc.onload = function() {
+      var player;
       player = new Bitmap(playerSrc);
       return buildInterfaceIfReady();
     };
@@ -87,17 +75,18 @@
     if (currentKey === 39) return "right";
   };
 
-  window.tick = function(elapsed) {
-    var bar, barTop, i, onBar, overHole, playerBottom, _i, _len;
+  tick = function(elapsed) {
+    var bar, barTop, i, moveSpeed, nextBar, onBar, overHole, playerBottom;
     i = 0;
-    for (_i = 0, _len = bars.length; _i < _len; _i++) {
-      bar = bars[_i];
+    while (i < bars.length) {
+      bar = bars[i];
       bar.y -= 2;
       playerBottom = player.y + 65;
       barTop = bar.y - 22;
       onBar = barTop < playerBottom && barTop > player.y;
       overHole = false;
       if (onBar && !overHole) player.y -= playerBottom - barTop;
+      i++;
     }
     if (getKey() === "left") moveSpeed = -1.0;
     if (getKey() === "right") moveSpeed = 1.0;
@@ -111,6 +100,20 @@
     }
     return stage.update();
   };
+
+  moveSpeed = 0;
+
+  nextBar = 2500;
+
+  bars = [];
+
+  bg = void 0;
+
+  player = void 0;
+
+  stage = void 0;
+
+  currentKey = void 0;
 
   window.onload = function() {
     var attention, highAlpha, lowAlpha, meditation, socket;
