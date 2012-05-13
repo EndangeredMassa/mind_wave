@@ -205,7 +205,7 @@ moveBars = (elapsed, barVelocity) ->
   if !blocked
     if player.currentAnimation != 'falling'
       player.gotoAndPlay 'falling'
-    player.y += gravity
+    player.y += gravity * elapsed
   else
     if player.currentAnimation == 'falling'
       player.gotoAndPlay 'idle'

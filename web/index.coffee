@@ -51,14 +51,12 @@ getMindwaveData = ->
       obj = currentChunk.substr(0, index+1)
       currentChunk = currentChunk.substr(index+1)
       data = JSON.parse(obj)
-
       return data
 
   return null
 
 mindwave.on 'data', (rawData) ->
   currentChunk += rawData.toString()
-  #data = JSON.parse(rawData.toString())
 
   data = getMindwaveData()
 
