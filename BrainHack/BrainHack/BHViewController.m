@@ -55,7 +55,7 @@ NSString *BHServerPortKey = @"BHServerPortKey";
 {
     self.motionMgr = [[CMMotionManager alloc] init];
     if (self.motionMgr.deviceMotionAvailable) {
-        self.motionMgr.deviceMotionUpdateInterval = 0.01666;
+        self.motionMgr.deviceMotionUpdateInterval = 0.1666;
         [self.motionMgr startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:
          ^(CMDeviceMotion *motion, NSError *err) {
              if (err) {
@@ -70,7 +70,7 @@ NSString *BHServerPortKey = @"BHServerPortKey";
 #ifdef DEBUG
                  NSLog(@"Yaw val: %f", adjustedYaw);
 #endif
-                 NSString *yawString = [NSString stringWithFormat:@"%f", adjustedYaw];
+                 NSString *yawString = [NSString stringWithFormat:@"%f;", adjustedYaw];
                  NSData *yawData = [yawString dataUsingEncoding:NSUTF8StringEncoding];
                  int result = [_outStream write:yawData.bytes maxLength:yawData.length];
                  if (result == -1) {
