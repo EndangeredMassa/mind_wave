@@ -267,16 +267,48 @@ window.tick = (elapsedMs) ->
 
   stage.update()
 
+prepareForIPad = ->
+    # Positioning for iPad
+    body = document.getElementsByTagName('body')[0]
+    table = document.getElementsByTagName('table')[0]
+    $('header').style.width = '1024px'
+    $('header').style.padding = '0'
+    attentionCanvas = $('attention')
+    attentionCanvas.parentElement.removeChild(attentionCanvas)
+    attentionCanvas.style.float = 'right'
+    attentionCanvas.width = '412'
+    attentionCanvas.style.position = 'absolute'
+    attentionCanvas.style.left = '613px'
+    attentionCanvas.style.top = '35px'
+
+    meditationCanvas = $('meditation')
+    meditationCanvas.parentElement.removeChild(meditationCanvas)
+    meditationCanvas.style.float = 'right'
+    meditationCanvas.width = '412'
+    meditationCanvas.style.position = 'absolute'
+    meditationCanvas.style.left = '613px'
+    meditationCanvas.style.top = '235px'
+    gameCanvas = $('game')
+    text = $('text')
+    body.removeChild(table)
+    body.appendChild(gameCanvas)
+    body.appendChild(attentionCanvas)
+    body.appendChild(meditationCanvas)
+    body.appendChild(text)
+
 window.onload = ->
   story = $('text').innerText
   maxStoryPosition = story.length - 1
-
-  attention = createSeries($("attention"), 'Attention', { r: 255, g: 0, b: 0 })
-  meditation = createSeries($("meditation"), 'Meditation', { r: 0, g: 0, b: 255 })
-  highAlpha = createSeries($("alpha"), null, { r: 125, g: 125, b: 125 })
-  highGamma = createSeries($("gamma"), null, { r: 125, g: 125, b: 125 })
-  highBeta = createSeries($("beta"), null, { r: 125, g: 125, b: 125 })
-  delta = createSeries($("delta-theta"), null, { r: 125, g: 125, b: 125 })
+  iPad = navigator.platform == 'iPad'
+  if iPad
+    prepareForIPad()
+  attention = createSeries($('attention'), 'Attention', { r: 255, g: 0, b: 0 })
+  meditation = createSeries($('meditation'), 'Meditation', { r: 0, g: 0, b: 255 })
+  if !iPad
+    highAlpha = createSeries($("alpha"), null, { r: 125, g: 125, b: 125 })
+    highGamma = createSeries($("gamma"), null, { r: 125, g: 125, b: 125 })
+    highBeta = createSeries($("beta"), null, { r: 125, g: 125, b: 125 })
+    delta = createSeries($("delta-theta"), null, { r: 125, g: 125, b: 125 })
 
   host = window.location.host
   socket = io.connect("http://#{host}")
@@ -289,10 +321,11 @@ window.onload = ->
     currentTime = new Date().getTime()
     attention.append currentTime, data.eSense.attention
     meditation.append currentTime, data.eSense.meditation
-    highAlpha.append currentTime, data.eegPower.highAlpha
-    highGamma.append currentTime, data.eegPower.highGamma
-    highBeta.append currentTime, data.eegPower.highBeta
-    delta.append currentTime, data.eegPower.delta
+    if !iPad
+      highAlpha.append currentTime, data.eegPower.highAlpha
+      highGamma.append currentTime, data.eegPower.highGamma
+      highBeta.append currentTime, data.eegPower.highBeta
+      delta.append currentTime, data.eegPower.delta
 
   socket.on "moveSpeed", (newMoveSpeed) ->
     moveSpeed = parseFloat(newMoveSpeed)

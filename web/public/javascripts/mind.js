@@ -1,5 +1,5 @@
 (function() {
-  var $, addBar, addLine, buildInterfaceIfReady, charWidth, charts, createBars, createSeries, currentKey, gameOver, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, maxStoryPosition, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, playerAnim, playerSprites, rand, renderLine, runGame, score, stage, stop, stopGame, story, storyPosition, updateScore;
+  var $, addBar, addLine, buildInterfaceIfReady, charWidth, charts, createBars, createSeries, currentKey, gameOver, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, maxStoryPosition, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, playerAnim, playerSprites, prepareForIPad, rand, renderLine, runGame, score, stage, stop, stopGame, story, storyPosition, updateScore;
 
   moveSpeed = 0;
 
@@ -334,40 +334,73 @@
     return stage.update();
   };
 
+  prepareForIPad = function() {
+    var attentionCanvas, body, gameCanvas, meditationCanvas, table, text;
+    body = document.getElementsByTagName('body')[0];
+    table = document.getElementsByTagName('table')[0];
+    $('header').style.width = '1024px';
+    $('header').style.padding = '0';
+    attentionCanvas = $('attention');
+    attentionCanvas.parentElement.removeChild(attentionCanvas);
+    attentionCanvas.style.float = 'right';
+    attentionCanvas.width = '412';
+    attentionCanvas.style.position = 'absolute';
+    attentionCanvas.style.left = '613px';
+    attentionCanvas.style.top = '35px';
+    meditationCanvas = $('meditation');
+    meditationCanvas.parentElement.removeChild(meditationCanvas);
+    meditationCanvas.style.float = 'right';
+    meditationCanvas.width = '412';
+    meditationCanvas.style.position = 'absolute';
+    meditationCanvas.style.left = '613px';
+    meditationCanvas.style.top = '235px';
+    gameCanvas = $('game');
+    text = $('text');
+    body.removeChild(table);
+    body.appendChild(gameCanvas);
+    body.appendChild(attentionCanvas);
+    body.appendChild(meditationCanvas);
+    return body.appendChild(text);
+  };
+
   window.onload = function() {
-    var attention, delta, highAlpha, highBeta, highGamma, host, meditation, socket;
+    var attention, delta, highAlpha, highBeta, highGamma, host, iPad, meditation, socket;
     story = $('text').innerText;
     maxStoryPosition = story.length - 1;
-    attention = createSeries($("attention"), 'Attention', {
+    iPad = navigator.platform === 'iPad';
+    if (iPad) prepareForIPad();
+    attention = createSeries($('attention'), 'Attention', {
       r: 255,
       g: 0,
       b: 0
     });
-    meditation = createSeries($("meditation"), 'Meditation', {
+    meditation = createSeries($('meditation'), 'Meditation', {
       r: 0,
       g: 0,
       b: 255
     });
-    highAlpha = createSeries($("alpha"), null, {
-      r: 125,
-      g: 125,
-      b: 125
-    });
-    highGamma = createSeries($("gamma"), null, {
-      r: 125,
-      g: 125,
-      b: 125
-    });
-    highBeta = createSeries($("beta"), null, {
-      r: 125,
-      g: 125,
-      b: 125
-    });
-    delta = createSeries($("delta-theta"), null, {
-      r: 125,
-      g: 125,
-      b: 125
-    });
+    if (!iPad) {
+      highAlpha = createSeries($("alpha"), null, {
+        r: 125,
+        g: 125,
+        b: 125
+      });
+      highGamma = createSeries($("gamma"), null, {
+        r: 125,
+        g: 125,
+        b: 125
+      });
+      highBeta = createSeries($("beta"), null, {
+        r: 125,
+        g: 125,
+        b: 125
+      });
+      delta = createSeries($("delta-theta"), null, {
+        r: 125,
+        g: 125,
+        b: 125
+      });
+    }
     host = window.location.host;
     socket = io.connect("http://" + host);
     socket.on("data", function(data) {
@@ -378,10 +411,12 @@
       currentTime = new Date().getTime();
       attention.append(currentTime, data.eSense.attention);
       meditation.append(currentTime, data.eSense.meditation);
-      highAlpha.append(currentTime, data.eegPower.highAlpha);
-      highGamma.append(currentTime, data.eegPower.highGamma);
-      highBeta.append(currentTime, data.eegPower.highBeta);
-      return delta.append(currentTime, data.eegPower.delta);
+      if (!iPad) {
+        highAlpha.append(currentTime, data.eegPower.highAlpha);
+        highGamma.append(currentTime, data.eegPower.highGamma);
+        highBeta.append(currentTime, data.eegPower.highBeta);
+        return delta.append(currentTime, data.eegPower.delta);
+      }
     });
     socket.on("moveSpeed", function(newMoveSpeed) {
       return moveSpeed = parseFloat(newMoveSpeed);
