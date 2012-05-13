@@ -17,18 +17,27 @@ $ = (id) ->
 rand = (min, max) ->
   parseInt(Math.random() * (max - min) + min, 10)
 
-createSeries = (canvas) ->
-  r = rand(0, 255)
-  g = rand(0, 255)
-  b = rand(0, 255)
+parentRender = SmoothieChart.prototype.render
+SmoothieChart.prototype.render = (canvas, time) ->
+  parentRender.call(this, canvas, time)
+  attentionContext = canvas.getContext('2d')
+  attentionContext.save()
+  attentionContext.font = '14px bold "Lucida Grande", Helvetica, Arial, sans-serif';
+  attentionContext.fillStyle = '#aaaaaa'
+  attentionContext.fillText(this.title, 0, 50)
+  attentionContext.restore()
+
+createSeries = (canvas, title, color) ->
+  context = canvas.getContext('2d')
   ts = new TimeSeries()
-  smoothie = new SmoothieChart()
+
+  smoothie = new SmoothieChart({ labels: {disabled: true}})
+  smoothie.title = title
   smoothie.streamTo canvas
   smoothie.addTimeSeries ts,
-    strokeStyle: "rgb(" + r + ", " + g + ", " + b + ")"
-    fillStyle: "rgba(" + r + ", " + g + ", " + b + ", 0.4)"
+    strokeStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.25)"
+    fillStyle: "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.2)"
     lineWidth: 3
-
   ts
 
 runGame = ->
@@ -59,7 +68,7 @@ buildInterfaceIfReady = ->
   player.y = 0
   player.width = 64
   player.height = 64
-  stage.addChild bg, player
+  stage.addChild player
   lines.push(addLine())
   stage.update()
 
@@ -86,7 +95,7 @@ renderLine = (y, gapPosition, gapSize) ->
 
 addBar = (x, y, width) ->
   text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substring(0, width)
-  bar = new Text(text, "30px bold Courier New", "#0F0")
+  bar = new Text(text, "30px bold 'Courier New'", "#0F0")
   bar.x = x
   bar.y = y
   bar.width = width
@@ -163,10 +172,15 @@ window.tick = (elapsed) ->
   stage.update()
 
 window.onload = ->
-  attention = createSeries($("attention"))
-  meditation = createSeries($("meditation"))
-  lowAlpha = createSeries($("low-alpha"))
-  highAlpha = createSeries($("high-alpha"))
+  attention = createSeries($("attention"), 'Attention', { r: 255, g: 0, b: 0 })
+  meditation = createSeries($("meditation"), 'Meditation', { r: 0, g: 0, b: 255 })
+
+  ###
+  testCtx = $('test').getContext('2d')
+  testCtx.fillRect(0, 0, $('test').width, $('test').height)
+  testCtx.strokeStyle = '#ffffff'
+  testCtx.strokeText('Test', 0, 1)
+  ###
 
   host = window.location.host
   socket = io.connect("http://#{host}")
@@ -178,8 +192,6 @@ window.onload = ->
     currentTime = new Date().getTime()
     attention.append currentTime, data.eSense.attention
     meditation.append currentTime, data.eSense.meditation
-    lowAlpha.append currentTime, data.eegPower.lowAlpha
-    highAlpha.append currentTime, data.eegPower.highAlpha
 
   socket.on "moveSpeed", (newMoveSpeed) ->
     moveSpeed = parseFloat(newMoveSpeed)

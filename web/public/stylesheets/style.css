@@ -1,5 +1,6 @@
 body {
   font: 14px bold "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 0;
 }
 
 a {
@@ -7,11 +8,11 @@ a {
 }
 
 .graph {
-  float: right;
+
 }
 
 canvas {
-  float: left;
+
 }
 
 h3 {
