@@ -92,7 +92,8 @@ getDifficulty = ->
   lastAttentionScore / 100.0
 
 getDanger = ->
-  1 - (lastMeditationScore / 100.0)
+  danger = (lastMeditationScore / 100.0)
+  1 - danger * danger
 
 addLine = ->
   difficulty = getDifficulty()
