@@ -2,6 +2,8 @@ moveSpeed = 0
 nextBar = 800
 lines = []
 player = null
+playerSprites = null
+playerAnim = null
 stage = null
 currentKey = null
 charWidth = 15
@@ -51,29 +53,42 @@ createSeries = (canvas, title, color) ->
 
 runGame = ->
   playerSrc = new Image()
-  playerSrc.src = "/images/player.png"
+  playerSrc.src = "/images/crowley.png"
   playerSrc.name = "player1"
   playerSrc.onload = ->
-    player = new Bitmap(playerSrc)
+    spriteData =
+      images: [playerSrc],
+      frames: { width: 32, height: 48 },
+      animations:
+        idle: { frames: [0,1,2,3], frequency: 10 },
+        left: { frames: [4,5,6,7], frequency: 10 },
+        right:{ frames: [8,9,10,11], frequency: 10 },
+        falling:{ frames: [12,13,14,15], frequency: 10 }
+
+    playerSprites = new SpriteSheet(spriteData)
+    player = new BitmapAnimation(playerSprites)
+#    player = new Bitmap(SpriteSheetUtils.extractFrame(player, 'idle'))
     buildInterfaceIfReady()
 
   canvas = $('game')
   stage = new Stage(canvas)
 
-
-  Ticker.addListener window
-  Ticker.useRAF = true
-  Ticker.setInterval 17
-
 buildInterfaceIfReady = ->
   return if !player
   player.x = 0
   player.y = 0
-  player.width = 64
-  player.height = 64
+  player.width = 32
+  player.height = 48
   stage.addChild player
+
+  player.gotoAndPlay('right')
   lines.push(addLine())
+
   stage.update()
+  Ticker.addListener window
+  Ticker.useRAF = true
+  Ticker.setInterval 17
+
 
 getDifficulty = ->
   lastAttentionScore / 100.0
@@ -162,9 +177,18 @@ movePlayerHorizontal = (elapsed) ->
   moveSpeed = -1.0 if getKey() == "left"
   moveSpeed = 1.0 if getKey() == "right"
 
-  player.x += (moveSpeed * 600.0) * elapsed
-  player.x = 548 if player.x > 548
+  oldX = player.x
+  player.x += (moveSpeed * 15.0)
+  player.x = 600 - player.width if player.x > 600 - player.width
   player.x = 0 if player.x < 0
+
+  if player.currentAnimation != 'falling'
+    if player.x > oldX && player.currentAnimation != 'right'
+      player.gotoAndPlay('right')
+    else if player.x < oldX && player.currentAnimation != 'left'
+      player.gotoAndPlay('left')
+    else if player.x == oldX && player.currentAnimation != 'idle'
+      player.gotoAndPlay('idle')
 
 moveBars = (elapsed, barVelocity) ->
   blocked = false
@@ -179,7 +203,12 @@ moveBars = (elapsed, barVelocity) ->
       blocked = true
 
   if !blocked
-    player.y += gravity * elapsed
+    if player.currentAnimation != 'falling'
+      player.gotoAndPlay 'falling'
+    player.y += gravity
+  else
+    if player.currentAnimation == 'falling'
+      player.gotoAndPlay 'idle'
 
   lowerBound = (570 - player.height)
   if player.y > lowerBound
@@ -228,4 +257,3 @@ window.onload = ->
     console.log "connected"
 
   runGame()
-

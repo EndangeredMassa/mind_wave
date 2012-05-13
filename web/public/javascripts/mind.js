@@ -1,5 +1,5 @@
 (function() {
-  var $, addBar, addLine, buildInterfaceIfReady, charWidth, charts, createBars, createSeries, currentKey, gameOver, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, maxStoryPosition, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, rand, renderLine, runGame, score, stage, stop, story, storyPosition, updateScore;
+  var $, addBar, addLine, buildInterfaceIfReady, charWidth, charts, createBars, createSeries, currentKey, gameOver, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, maxStoryPosition, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, playerAnim, playerSprites, rand, renderLine, runGame, score, stage, stop, story, storyPosition, updateScore;
 
   moveSpeed = 0;
 
@@ -8,6 +8,10 @@
   lines = [];
 
   player = null;
+
+  playerSprites = null;
+
+  playerAnim = null;
 
   stage = null;
 
@@ -79,28 +83,56 @@
   runGame = function() {
     var canvas, playerSrc;
     playerSrc = new Image();
-    playerSrc.src = "/images/player.png";
+    playerSrc.src = "/images/crowley.png";
     playerSrc.name = "player1";
     playerSrc.onload = function() {
-      player = new Bitmap(playerSrc);
+      var spriteData;
+      spriteData = {
+        images: [playerSrc],
+        frames: {
+          width: 32,
+          height: 48
+        },
+        animations: {
+          idle: {
+            frames: [0, 1, 2, 3],
+            frequency: 10
+          },
+          left: {
+            frames: [4, 5, 6, 7],
+            frequency: 10
+          },
+          right: {
+            frames: [8, 9, 10, 11],
+            frequency: 10
+          },
+          falling: {
+            frames: [12, 13, 14, 15],
+            frequency: 10
+          }
+        }
+      };
+      playerSprites = new SpriteSheet(spriteData);
+      player = new BitmapAnimation(playerSprites);
       return buildInterfaceIfReady();
     };
     canvas = $('game');
-    stage = new Stage(canvas);
-    Ticker.addListener(window);
-    Ticker.useRAF = true;
-    return Ticker.setInterval(17);
+    return stage = new Stage(canvas);
   };
 
   buildInterfaceIfReady = function() {
     if (!player) return;
     player.x = 0;
     player.y = 0;
-    player.width = 64;
-    player.height = 64;
+    player.width = 32;
+    player.height = 48;
     stage.addChild(player);
+    player.gotoAndPlay('right');
     lines.push(addLine());
-    return stage.update();
+    stage.update();
+    Ticker.addListener(window);
+    Ticker.useRAF = true;
+    return Ticker.setInterval(17);
   };
 
   getDifficulty = function() {
@@ -195,11 +227,22 @@
   };
 
   movePlayerHorizontal = function(elapsed) {
+    var oldX;
     if (getKey() === "left") moveSpeed = -1.0;
     if (getKey() === "right") moveSpeed = 1.0;
-    player.x += (moveSpeed * 600.0) * elapsed;
-    if (player.x > 548) player.x = 548;
-    if (player.x < 0) return player.x = 0;
+    oldX = player.x;
+    player.x += moveSpeed * 15.0;
+    if (player.x > 600 - player.width) player.x = 600 - player.width;
+    if (player.x < 0) player.x = 0;
+    if (player.currentAnimation !== 'falling') {
+      if (player.x > oldX && player.currentAnimation !== 'right') {
+        return player.gotoAndPlay('right');
+      } else if (player.x < oldX && player.currentAnimation !== 'left') {
+        return player.gotoAndPlay('left');
+      } else if (player.x === oldX && player.currentAnimation !== 'idle') {
+        return player.gotoAndPlay('idle');
+      }
+    }
   };
 
   moveBars = function(elapsed, barVelocity) {
@@ -213,7 +256,12 @@
       thisBlocked = movePlayerVertical(leftBar, rightBar);
       if (thisBlocked) blocked = true;
     }
-    if (!blocked) player.y += gravity * elapsed;
+    if (!blocked) {
+      if (player.currentAnimation !== 'falling') player.gotoAndPlay('falling');
+      player.y += gravity;
+    } else {
+      if (player.currentAnimation === 'falling') player.gotoAndPlay('idle');
+    }
     lowerBound = 570 - player.height;
     if (player.y > lowerBound) return player.y = lowerBound;
   };
