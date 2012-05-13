@@ -1,5 +1,5 @@
 (function() {
-  var $, addBar, addLine, buildInterfaceIfReady, charWidth, charts, createBars, createSeries, currentKey, gameOver, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, maxStoryPosition, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, playerAnim, playerSprites, rand, renderLine, runGame, score, stage, stop, story, storyPosition, updateScore;
+  var $, addBar, addLine, buildInterfaceIfReady, charWidth, charts, createBars, createSeries, currentKey, gameOver, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, maxStoryPosition, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, playerAnim, playerSprites, rand, renderLine, runGame, score, stage, stop, stopGame, story, storyPosition, updateScore;
 
   moveSpeed = 0;
 
@@ -59,7 +59,7 @@
       if (that.title) {
         attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif';
         attentionContext.fillStyle = '#555555';
-        attentionContext.fillText(that.title, 250, 100);
+        attentionContext.fillText(that.title, 210, 100);
         return attentionContext.restore();
       }
     });
@@ -171,7 +171,10 @@
     storyPosition += width;
     rest = story.substr(storyPosition);
     $('text').innerText = rest;
-    if (storyPosition >= maxStoryPosition) storyPosition = 0;
+    if (storyPosition >= maxStoryPosition) {
+      gameOver('You Win!', '#0F0');
+      return;
+    }
     bar = new Text(text, "30px bold 'Courier New'", "#FFF");
     bar.x = x;
     bar.y = y;
@@ -194,9 +197,9 @@
     return currentKey = e.keyCode;
   });
 
-  gameOver = function() {
-    var chart, gameOverText, rect, scoreText, _i, _len, _results;
-    gameOverText = new Text('GAME OVER', '80px bold "Courier New"', '#F00');
+  gameOver = function(msg, color) {
+    var gameOverText, rect, scoreText;
+    gameOverText = new Text(msg, '80px bold "Courier New"', color);
     gameOverText.x = 90;
     gameOverText.y = 280;
     rect = new Shape();
@@ -205,13 +208,16 @@
     rect.alpha = 0.9;
     rect.x = 50;
     rect.y = 50;
-    scoreText = new Text("SCORE: " + score, '60px bold "Courier New"', '#F00');
+    scoreText = new Text("SCORE: " + score, '60px bold "Courier New"', color);
     scoreText.x = 100;
     scoreText.y = 400;
-    stage.addChild(rect);
-    stage.addChild(gameOverText);
-    stage.addChild(scoreText);
+    stage.addChild(rect, gameOverText, scoreText);
     stage.update();
+    return stopGame();
+  };
+
+  stopGame = function() {
+    var chart, _i, _len, _results;
     stop = true;
     Ticker.setPaused(true);
     _results = [];
@@ -241,7 +247,7 @@
         return false;
       } else {
         player.y = barTop - player.height;
-        if (player.y <= 0) gameOver();
+        if (player.y <= 0) gameOver('GAME OVER', '#F00');
         return true;
       }
     }
@@ -253,7 +259,7 @@
     if (getKey() === "left") moveSpeed = -1.0;
     if (getKey() === "right") moveSpeed = 1.0;
     oldX = player.x;
-    player.x += moveSpeed * 15.0;
+    player.x += parseInt(moveSpeed * 15.0, 10);
     if (player.x > 600 - player.width) player.x = 600 - player.width;
     if (player.x < 0) player.x = 0;
     if (player.currentAnimation !== 'falling') {
@@ -272,7 +278,6 @@
     blocked = false;
     length = lines.length;
     i = 0;
-    console.log('Check bars');
     while (i < length) {
       line = lines[i];
       leftBar = line[0], rightBar = line[1];
@@ -295,7 +300,7 @@
     }
     if (!blocked) {
       if (player.currentAnimation !== 'falling') player.gotoAndPlay('falling');
-      player.y += gravity * elapsed;
+      player.y += parseInt(gravity * elapsed, 10);
     } else {
       if (player.currentAnimation === 'falling') player.gotoAndPlay('idle');
     }

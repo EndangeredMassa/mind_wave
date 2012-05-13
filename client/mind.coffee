@@ -35,7 +35,7 @@ SmoothieChart.prototype.render = (canvas, time) ->
     if that.title
       attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif'
       attentionContext.fillStyle = '#555555'
-      attentionContext.fillText(that.title, 250, 100)
+      attentionContext.fillText(that.title, 210, 100)
       attentionContext.restore()
 
 createSeries = (canvas, title, color) ->
@@ -116,7 +116,9 @@ addBar = (x, y, width) ->
   rest = story.substr(storyPosition)
   $('text').innerText = rest
   if storyPosition >= maxStoryPosition
-    storyPosition = 0
+    gameOver('You Win!', '#0F0')
+    return
+
 
   bar = new Text(text, "30px bold 'Courier New'", "#FFF")
   bar.x = x
@@ -138,8 +140,8 @@ addBar = (x, y, width) ->
 window.addEventListener 'keydown', (e) ->
   currentKey = e.keyCode
 
-gameOver = ->
-  gameOverText = new Text('GAME OVER', '80px bold "Courier New"', '#F00')
+gameOver = (msg, color) ->
+  gameOverText = new Text(msg, '80px bold "Courier New"', color)
   gameOverText.x = 90
   gameOverText.y = 280
 
@@ -150,16 +152,15 @@ gameOver = ->
   rect.x = 50
   rect.y = 50
 
-  scoreText = new Text("SCORE: #{score}", '60px bold "Courier New"', '#F00')
+  scoreText = new Text("SCORE: #{score}", '60px bold "Courier New"', color)
   scoreText.x = 100
   scoreText.y = 400
 
-  stage.addChild(rect)
-  stage.addChild(gameOverText)
-  stage.addChild(scoreText)
-
+  stage.addChild(rect, gameOverText, scoreText)
   stage.update()
+  stopGame()
 
+stopGame = ->
   stop = true
   Ticker.setPaused(true)
   for chart in charts
@@ -186,7 +187,7 @@ movePlayerVertical = (leftBar, rightBar, oldY) ->
     else
       player.y = barTop - player.height
       if player.y <= 0
-        gameOver()
+        gameOver('GAME OVER', '#F00')
       return true
   return false
 
@@ -195,7 +196,7 @@ movePlayerHorizontal = (elapsed) ->
   moveSpeed = 1.0 if getKey() == "right"
 
   oldX = player.x
-  player.x += (moveSpeed * 15.0)
+  player.x += parseInt(moveSpeed * 15.0, 10)
   player.x = 600 - player.width if player.x > 600 - player.width
   player.x = 0 if player.x < 0
 
@@ -211,7 +212,6 @@ moveBars = (elapsed, barVelocity, oldY) ->
   blocked = false
   length = lines.length
   i = 0
-  console.log 'Check bars'
   while i < length
     line = lines[i]
     [leftBar, rightBar] = line
@@ -236,7 +236,7 @@ moveBars = (elapsed, barVelocity, oldY) ->
   if !blocked
     if player.currentAnimation != 'falling'
       player.gotoAndPlay 'falling'
-    player.y += gravity * elapsed
+    player.y += parseInt(gravity * elapsed, 10)
   else
     if player.currentAnimation == 'falling'
       player.gotoAndPlay 'idle'
