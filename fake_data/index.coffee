@@ -10,14 +10,14 @@ getData = ->
       "meditation":rand(0,100)
     },
     "eegPower":{
-      "delta":rand(0,2000000),
-      "theta":rand(0,10000),
-      "lowAlpha":rand(0,25000),
-      "highAlpha":rand(0, 20000),
-      "lowBeta":rand(0,20000),
-      "highBeta":rand(0,25000),
-      "lowGamma":rand(0, 15000),
-      "highGamma":rand(0, 10000)
+      "delta":rand(0,100),
+      "theta":rand(0,100),
+      "lowAlpha":rand(0,100),
+      "highAlpha":rand(0, 100),
+      "lowBeta":rand(0,100),
+      "highBeta":rand(0,100),
+      "lowGamma":rand(0,100),
+      "highGamma":rand(0,100)
     },
     "poorSignalLevel":26
   }
