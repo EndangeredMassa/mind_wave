@@ -165,19 +165,18 @@
     text = story.substr(storyPosition, width);
     storyPosition += width;
     if (storyPosition >= maxStoryPosition) storyPosition = 0;
-    bar = new Text(text, "30px bold 'Courier New'", "#0F0");
+    bar = new Text(text, "30px bold 'Courier New'", "#FFF");
     bar.x = x;
     bar.y = y;
     bar.width = width;
     bar.height = 24;
-    stage.addChild(bar);
     rect = new Shape();
-    rect.graphics.beginFill(Graphics.getRGB(0, 255, 0));
+    rect.graphics.beginFill(Graphics.getRGB(0, 0, 0));
     rect.graphics.rect(0, 0, bar.getMeasuredWidth(), bar.height + 5);
-    rect.alpha = 0.5;
     rect.x = bar.x;
     rect.y = bar.y - bar.height;
     stage.addChild(rect);
+    stage.addChild(bar);
     return {
       bar: bar,
       rect: rect
@@ -305,14 +304,14 @@
   window.onload = function() {
     var attention, host, meditation, socket;
     attention = createSeries($("attention"), 'Attention', {
-      r: 255,
-      g: 0,
-      b: 0
+      r: 70,
+      g: 70,
+      b: 70
     });
     meditation = createSeries($("meditation"), 'Meditation', {
-      r: 0,
-      g: 0,
-      b: 255
+      r: 125,
+      g: 125,
+      b: 125
     });
     host = window.location.host;
     socket = io.connect("http://" + host);

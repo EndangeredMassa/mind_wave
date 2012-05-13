@@ -131,7 +131,7 @@ SmoothieChart.prototype.render = function(canvas, time) {
 
   // Move the origin.
   canvasContext.translate(dimensions.left, dimensions.top);
-  
+
   // Create a clipped rectangle - anything we draw will be constrained to this rectangle.
   // This prevents the occasional pixels from curves near the edges overrunning and creating
   // screen cheese (that phrase should neeed no explanation).
@@ -141,11 +141,12 @@ SmoothieChart.prototype.render = function(canvas, time) {
 
   // Clear the working area.
   canvasContext.save();
-  canvasContext.fillStyle = options.grid.fillStyle;
+  canvasContext.fillStyle = '#FFF';
   canvasContext.clearRect(0, 0, dimensions.width, dimensions.height);
   canvasContext.fillRect(0, 0, dimensions.width, dimensions.height);
   canvasContext.restore();
 
+  /*
   // Grid lines....
   canvasContext.save();
   canvasContext.lineWidth = options.grid.lineWidth || 1;
@@ -161,6 +162,7 @@ SmoothieChart.prototype.render = function(canvas, time) {
       canvasContext.closePath();
     }
   }
+  */
 
   // Horizontal (value) dividers.
   for (var v = 1; v < options.grid.verticalSections; v++) {
