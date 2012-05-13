@@ -118,7 +118,7 @@ addBar = (x, y, width) ->
   if storyPosition >= maxStoryPosition
     storyPosition = 0
 
-  bar = new Text(text, "30px bold 'Courier New'", "#0F0")
+  bar = new Text(text, "30px bold 'Courier New'", "#FFFFFF")
   bar.x = x
   bar.y = y
   bar.width = width
@@ -126,8 +126,10 @@ addBar = (x, y, width) ->
   stage.addChild(bar)
 
   rect = new Shape()
-  rect.graphics.beginFill(Graphics.getRGB(0,255,0))
-  rect.graphics.rect(0, 0, bar.getMeasuredWidth(), bar.height + 5)
+  rect.graphics.setStrokeStyle(4)
+  rect.graphics.beginFill(Graphics.getRGB(0,255,0,0.5))
+  rect.graphics.beginStroke(Graphics.getRGB(0,255,0,1.0))
+  rect.graphics.rect(0, 0, bar.getMeasuredWidth(), bar.height + 8)
   rect.alpha = 0.5
   rect.x = bar.x
   rect.y = bar.y - bar.height
