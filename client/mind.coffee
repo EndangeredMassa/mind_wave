@@ -29,14 +29,14 @@ rand = (min, max) ->
 
 parentRender = SmoothieChart.prototype.render
 SmoothieChart.prototype.render = (canvas, time) ->
-  parentRender.call(this, canvas, time)
-  attentionContext = canvas.getContext('2d')
-  attentionContext.save()
-  attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif'
-  attentionContext.fillStyle = '#777777'
-  attentionContext.fillText(this.title, 250, 100)
-  attentionContext.restore()
-
+  that = this
+  parentRender.call this, canvas, time, () ->
+    attentionContext = canvas.getContext('2d')
+    attentionContext.save()
+    attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif'
+    attentionContext.fillStyle = '#555555'
+    attentionContext.fillText(that.title, 250, 100)
+    attentionContext.restore()
 
 createSeries = (canvas, title, color) ->
   context = canvas.getContext('2d')

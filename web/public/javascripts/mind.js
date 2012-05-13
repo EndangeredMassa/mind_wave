@@ -50,14 +50,17 @@
   parentRender = SmoothieChart.prototype.render;
 
   SmoothieChart.prototype.render = function(canvas, time) {
-    var attentionContext;
-    parentRender.call(this, canvas, time);
-    attentionContext = canvas.getContext('2d');
-    attentionContext.save();
-    attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif';
-    attentionContext.fillStyle = '#777777';
-    attentionContext.fillText(this.title, 250, 100);
-    return attentionContext.restore();
+    var that;
+    that = this;
+    return parentRender.call(this, canvas, time, function() {
+      var attentionContext;
+      attentionContext = canvas.getContext('2d');
+      attentionContext.save();
+      attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif';
+      attentionContext.fillStyle = '#555555';
+      attentionContext.fillText(that.title, 250, 100);
+      return attentionContext.restore();
+    });
   };
 
   createSeries = function(canvas, title, color) {
