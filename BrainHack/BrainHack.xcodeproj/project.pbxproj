@@ -1,0 +1,290 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		60929EA4155F0A2800659A3F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60929EA3155F0A2800659A3F /* UIKit.framework */; };
+		60929EA6155F0A2800659A3F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60929EA5155F0A2800659A3F /* Foundation.framework */; };
+		60929EA8155F0A2800659A3F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60929EA7155F0A2800659A3F /* CoreGraphics.framework */; };
+		60929EAE155F0A2800659A3F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60929EAC155F0A2800659A3F /* InfoPlist.strings */; };
+		60929EB0155F0A2800659A3F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 60929EAF155F0A2800659A3F /* main.m */; };
+		60929EB4155F0A2800659A3F /* BHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 60929EB3155F0A2800659A3F /* BHAppDelegate.m */; };
+		60929EB7155F0A2800659A3F /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60929EB5155F0A2800659A3F /* MainStoryboard.storyboard */; };
+		60929EBA155F0A2800659A3F /* BHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60929EB9155F0A2800659A3F /* BHViewController.m */; };
+		60929EC2155F122E00659A3F /* BHConnectionConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60929EC1155F122E00659A3F /* BHConnectionConfigViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		60929E9F155F0A2800659A3F /* BrainHack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrainHack.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		60929EA3155F0A2800659A3F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		60929EA5155F0A2800659A3F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		60929EA7155F0A2800659A3F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		60929EAB155F0A2800659A3F /* BrainHack-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BrainHack-Info.plist"; sourceTree = "<group>"; };
+		60929EAD155F0A2800659A3F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		60929EAF155F0A2800659A3F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		60929EB1155F0A2800659A3F /* BrainHack-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BrainHack-Prefix.pch"; sourceTree = "<group>"; };
+		60929EB2155F0A2800659A3F /* BHAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BHAppDelegate.h; sourceTree = "<group>"; };
+		60929EB3155F0A2800659A3F /* BHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BHAppDelegate.m; sourceTree = "<group>"; };
+		60929EB6155F0A2800659A3F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		60929EB8155F0A2800659A3F /* BHViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BHViewController.h; sourceTree = "<group>"; };
+		60929EB9155F0A2800659A3F /* BHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BHViewController.m; sourceTree = "<group>"; };
+		60929EC0155F122E00659A3F /* BHConnectionConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BHConnectionConfigViewController.h; sourceTree = "<group>"; };
+		60929EC1155F122E00659A3F /* BHConnectionConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BHConnectionConfigViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		60929E9C155F0A2800659A3F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60929EA4155F0A2800659A3F /* UIKit.framework in Frameworks */,
+				60929EA6155F0A2800659A3F /* Foundation.framework in Frameworks */,
+				60929EA8155F0A2800659A3F /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		60929E94155F0A2800659A3F = {
+			isa = PBXGroup;
+			children = (
+				60929EA9155F0A2800659A3F /* BrainHack */,
+				60929EA2155F0A2800659A3F /* Frameworks */,
+				60929EA0155F0A2800659A3F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		60929EA0155F0A2800659A3F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				60929E9F155F0A2800659A3F /* BrainHack.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		60929EA2155F0A2800659A3F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				60929EA3155F0A2800659A3F /* UIKit.framework */,
+				60929EA5155F0A2800659A3F /* Foundation.framework */,
+				60929EA7155F0A2800659A3F /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		60929EA9155F0A2800659A3F /* BrainHack */ = {
+			isa = PBXGroup;
+			children = (
+				60929EB2155F0A2800659A3F /* BHAppDelegate.h */,
+				60929EB3155F0A2800659A3F /* BHAppDelegate.m */,
+				60929EB5155F0A2800659A3F /* MainStoryboard.storyboard */,
+				60929EB8155F0A2800659A3F /* BHViewController.h */,
+				60929EB9155F0A2800659A3F /* BHViewController.m */,
+				60929EC0155F122E00659A3F /* BHConnectionConfigViewController.h */,
+				60929EC1155F122E00659A3F /* BHConnectionConfigViewController.m */,
+				60929EAA155F0A2800659A3F /* Supporting Files */,
+			);
+			path = BrainHack;
+			sourceTree = "<group>";
+		};
+		60929EAA155F0A2800659A3F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				60929EAB155F0A2800659A3F /* BrainHack-Info.plist */,
+				60929EAC155F0A2800659A3F /* InfoPlist.strings */,
+				60929EAF155F0A2800659A3F /* main.m */,
+				60929EB1155F0A2800659A3F /* BrainHack-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		60929E9E155F0A2800659A3F /* BrainHack */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 60929EBD155F0A2800659A3F /* Build configuration list for PBXNativeTarget "BrainHack" */;
+			buildPhases = (
+				60929E9B155F0A2800659A3F /* Sources */,
+				60929E9C155F0A2800659A3F /* Frameworks */,
+				60929E9D155F0A2800659A3F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BrainHack;
+			productName = BrainHack;
+			productReference = 60929E9F155F0A2800659A3F /* BrainHack.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		60929E96155F0A2800659A3F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = BH;
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = 60929E99155F0A2800659A3F /* Build configuration list for PBXProject "BrainHack" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 60929E94155F0A2800659A3F;
+			productRefGroup = 60929EA0155F0A2800659A3F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				60929E9E155F0A2800659A3F /* BrainHack */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		60929E9D155F0A2800659A3F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60929EAE155F0A2800659A3F /* InfoPlist.strings in Resources */,
+				60929EB7155F0A2800659A3F /* MainStoryboard.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		60929E9B155F0A2800659A3F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60929EB0155F0A2800659A3F /* main.m in Sources */,
+				60929EB4155F0A2800659A3F /* BHAppDelegate.m in Sources */,
+				60929EBA155F0A2800659A3F /* BHViewController.m in Sources */,
+				60929EC2155F122E00659A3F /* BHConnectionConfigViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		60929EAC155F0A2800659A3F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				60929EAD155F0A2800659A3F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		60929EB5155F0A2800659A3F /* MainStoryboard.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				60929EB6155F0A2800659A3F /* en */,
+			);
+			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		60929EBB155F0A2800659A3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		60929EBC155F0A2800659A3F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		60929EBE155F0A2800659A3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "BrainHack/BrainHack-Prefix.pch";
+				INFOPLIST_FILE = "BrainHack/BrainHack-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		60929EBF155F0A2800659A3F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "BrainHack/BrainHack-Prefix.pch";
+				INFOPLIST_FILE = "BrainHack/BrainHack-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		60929E99155F0A2800659A3F /* Build configuration list for PBXProject "BrainHack" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60929EBB155F0A2800659A3F /* Debug */,
+				60929EBC155F0A2800659A3F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		60929EBD155F0A2800659A3F /* Build configuration list for PBXNativeTarget "BrainHack" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60929EBE155F0A2800659A3F /* Debug */,
+				60929EBF155F0A2800659A3F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 60929E96155F0A2800659A3F /* Project object */;
+}
