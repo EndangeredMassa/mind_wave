@@ -113,12 +113,13 @@
   };
 
   window.onload = function() {
-    var attention, highAlpha, lowAlpha, meditation, socket;
+    var attention, highAlpha, host, lowAlpha, meditation, socket;
     attention = createSeries($("attention"));
     meditation = createSeries($("meditation"));
     lowAlpha = createSeries($("low-alpha"));
     highAlpha = createSeries($("high-alpha"));
-    socket = io.connect("http://localhost:8080");
+    host = window.location.host;
+    socket = io.connect("http://" + host);
     socket.on("data", function(data) {
       var currentTime;
       currentTime = new Date().getTime();

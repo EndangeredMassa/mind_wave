@@ -100,7 +100,8 @@ window.onload = ->
   lowAlpha = createSeries($("low-alpha"))
   highAlpha = createSeries($("high-alpha"))
 
-  socket = io.connect("http://localhost:8080")
+  host = window.location.host
+  socket = io.connect("http://#{host}")
   socket.on "data", (data) ->
     currentTime = new Date().getTime()
     attention.append currentTime, data.eSense.attention

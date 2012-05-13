@@ -1,13 +1,8 @@
 express = require('express')
 routes = require('./routes')
 net = require 'net'
-io = require('socket.io').listen(8080)
-io.set('log level', 1)
+socketio = require('socket.io')
 
-browserClient = null
-io.sockets.on 'connection', (socket) ->
-  console.log 'client connected'
-  browserClient = socket
 
 # setup web server
 app = express.createServer()
@@ -23,8 +18,15 @@ app.configure 'development', ->
 app.configure 'production', ->
   app.use(express.errorHandler())
 app.get('/', routes.index)
-app.listen(80)
+app.listen(3000)
 
+io = socketio.listen(app)
+
+browserClient = null
+io.set('log level', 1)
+io.sockets.on 'connection', (socket) ->
+  console.log 'client connected'
+  browserClient = socket
 
 # handle mindwave
 port = 13854
