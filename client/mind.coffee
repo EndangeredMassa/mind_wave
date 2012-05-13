@@ -32,10 +32,11 @@ SmoothieChart.prototype.render = (canvas, time) ->
   parentRender.call this, canvas, time, () ->
     attentionContext = canvas.getContext('2d')
     attentionContext.save()
-    attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif'
-    attentionContext.fillStyle = '#555555'
-    attentionContext.fillText(that.title, 250, 100)
-    attentionContext.restore()
+    if that.title
+      attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif'
+      attentionContext.fillStyle = '#555555'
+      attentionContext.fillText(that.title, 250, 100)
+      attentionContext.restore()
 
 createSeries = (canvas, title, color) ->
   context = canvas.getContext('2d')
@@ -97,7 +98,7 @@ getDanger = ->
 
 addLine = ->
   difficulty = getDifficulty()
-  gap = parseInt(difficulty * 8 + 6, 10)
+  gap = parseInt(difficulty * 6 + 4, 10)
   renderLine(600, rand(1,20), gap)
 
 renderLine = (y, gapPosition, gapSize) ->
@@ -270,8 +271,12 @@ window.onload = ->
   story = $('text').innerText
   maxStoryPosition = story.length - 1
 
-  attention = createSeries($("attention"), 'Attention', { r: 70, g: 70, b: 70 })
-  meditation = createSeries($("meditation"), 'Meditation', { r: 125, g: 125, b: 125 })
+  attention = createSeries($("attention"), 'Attention', { r: 255, g: 0, b: 0 })
+  meditation = createSeries($("meditation"), 'Meditation', { r: 0, g: 0, b: 255 })
+  highAlpha = createSeries($("alpha"), null, { r: 125, g: 125, b: 125 })
+  highGamma = createSeries($("gamma"), null, { r: 125, g: 125, b: 125 })
+  highBeta = createSeries($("beta"), null, { r: 125, g: 125, b: 125 })
+  delta = createSeries($("delta-theta"), null, { r: 125, g: 125, b: 125 })
 
   host = window.location.host
   socket = io.connect("http://#{host}")
@@ -284,6 +289,10 @@ window.onload = ->
     currentTime = new Date().getTime()
     attention.append currentTime, data.eSense.attention
     meditation.append currentTime, data.eSense.meditation
+    highAlpha.append currentTime, data.eegPower.highAlpha
+    highGamma.append currentTime, data.eegPower.highGamma
+    highBeta.append currentTime, data.eegPower.highBeta
+    delta.append currentTime, data.eegPower.delta
 
   socket.on "moveSpeed", (newMoveSpeed) ->
     moveSpeed = parseFloat(newMoveSpeed)
