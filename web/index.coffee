@@ -22,11 +22,11 @@ app.listen(3000)
 
 io = socketio.listen(app)
 
-browserClient = null
+browserClients = []
 io.set('log level', 1)
 io.sockets.on 'connection', (socket) ->
   console.log 'client connected'
-  browserClient = socket
+  browserClients.push(socket)
 
 # handle mindwave
 port = 13854
@@ -37,7 +37,7 @@ mindwave = net.createConnection(port, host)
 
 currentChunk = ''
 mindwave.on 'data', (rawData) ->
-  return if !browserClient
+  return if browserClients.length == 0
   currentChunk += rawData.toString()
   lefts = 0
   rights = 0
@@ -51,7 +51,8 @@ mindwave.on 'data', (rawData) ->
       data = JSON.parse(obj)
 
   return if !data || !data.eSense
-  browserClient.emit 'data', data
+  for client in browserClients
+    client.emit 'data', data
 
 mindwave.on 'connect', ->
   console.log 'mindwave connected'
@@ -67,7 +68,6 @@ ipad = net.createServer (client) ->
   ipadChunk = ''
   data = null
   client.on 'data', (yaw) ->
-    return if !browserClient
     ipadChunk+= yaw
     for char, index in ipadChunk
       if char == ';'
@@ -75,7 +75,8 @@ ipad = net.createServer (client) ->
         ipadChunk = ipadChunk.substr(index+1)
 
     if data
-      browserClient.emit('moveSpeed', data)
+      for client in browserClients
+        client.emit('moveSpeed', data)
 
 ipad.listen 1337
 
