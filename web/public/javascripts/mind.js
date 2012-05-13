@@ -1,5 +1,5 @@
 (function() {
-  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getKey, gravity, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, runGame, stage;
+  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getKey, gravity, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, parentRender, player, rand, runGame, stage;
 
   moveSpeed = 0;
 
@@ -26,6 +26,10 @@
   };
 
   console.log = function() {};
+
+  rand = function(min, max) {
+    return parseInt(Math.random() * max + min, 10);
+  };
 
   parentRender = SmoothieChart.prototype.render;
 
@@ -106,7 +110,7 @@
   addBar = function(x, y, width) {
     var bar, text;
     text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substring(0, width);
-    bar = new Text(text, "30px bold Courier New", "#0F0");
+    bar = new Text(text, "30px bold 'Courier New'", "#0F0");
     bar.x = x;
     bar.y = y;
     bar.width = width;

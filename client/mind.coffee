@@ -14,6 +14,9 @@ $ = (id) ->
 
 console.log = () ->
 
+rand = (min,max) ->
+  parseInt Math.random() * max + min, 10
+
 parentRender = SmoothieChart.prototype.render
 SmoothieChart.prototype.render = (canvas, time) ->
   parentRender.call(this, canvas, time)
@@ -81,7 +84,7 @@ addLine = (y, gapPosition, gapSize) ->
 
 addBar = (x, y, width) ->
   text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substring(0, width)
-  bar = new Text(text, "30px bold Courier New", "#0F0")
+  bar = new Text(text, "30px bold 'Courier New'", "#0F0")
   bar.x = x
   bar.y = y
   bar.width = width
