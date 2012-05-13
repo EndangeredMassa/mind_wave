@@ -1,10 +1,12 @@
 moveSpeed = 0
 nextBar = 2500
-bars = []
+lines = []
 bg = null
 player = null
 stage = null
 currentKey = null
+charWidth = 20
+gravity = 10
 
 $ = (id) ->
   document.getElementById id
@@ -27,8 +29,6 @@ createSeries = (canvas) ->
   ts
 
 runGame = ->
-  canvas = null
-
   bgSrc = new Image()
   bgSrc.src = "/images/bg.jpg"
   bgSrc.name = "bg"
@@ -52,46 +52,110 @@ runGame = ->
 
 buildInterfaceIfReady = ->
   return if !bg || !player
-  player.x = 120
-  player.y = 400
+  player.x = 0
+  player.y = 0
+  player.width = 64
+  player.height = 64
   stage.addChild bg, player
-  bars.push addBar(0, 600)
+  lines.push(addLine(600, 10))
   stage.update()
 
-addBar = (x, y) ->
-  text = "DFGI2G23DFG34DG2SFD82F2SF2SFEWF223"
+addLine = (y, gap) ->
+  leftBar = addBar(0, y, 15)
+  rightBar = addBar(400, y, 10)
+
+  [leftBar, rightBar]
+
+addBar = (x, y, width) ->
+  text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substr(width)
   bar = new Text(text, "30px bold Courier New", "#0F0")
   bar.x = x
   bar.y = y
+  bar.width = width
+  bar.height = 24
   stage.addChild(bar)
   bar
 
+window.addEventListener 'keydown', (e) ->
+  currentKey = e.keyCode
+
 getKey = ->
-  return "left" if currentKey is 37
-  "right" if currentKey is 39
+  return "left" if currentKey == 37
+  "right" if currentKey == 39
 
-window.tick = (elapsed) ->
-  i = 0
+movePlayerVertical = (leftBar, rightBar) ->
+  playerBottom = player.y + player.height
 
-  for bar in bars
-    bar.y -= 2
-    playerBottom = player.y + 65
-    barTop = bar.y - 22
-    onBar = barTop < playerBottom and barTop > player.y
-    overHole = false
-    player.y -= (playerBottom - barTop)  if onBar and not overHole
+  ###
+  console.log 'player.y='+player.y
+  console.log 'player-height='+player.height
+  console.log 'bar.y='+leftBar.y
+  console.log 'playerBottom='+playerBottom
+  ###
 
-  moveSpeed = -1.0 if getKey() is "left"
-  moveSpeed = 1.0 if getKey() is "right"
+  barTop = leftBar.y - leftBar.height
+  diff = playerBottom - barTop
+  onBarLevel = (diff <= 10 && diff >= 0)
+
+  if onBarLevel
+    holeLeft = leftBar.x + (leftBar.width * charWidth)
+    holeRight = rightBar.x
+    playerLeft = player.x
+    playerRight = player.x + player.width
+
+    ###
+    console.log 'x: ' + rightBar.x
+    console.log 'width: ' + rightBar.width
+
+    console.log 'holeLeft: ' + holeLeft
+    console.log 'holeRight:' + holeRight
+    console.log 'playerLeft: ' + playerLeft
+    console.log 'playerRight: ' + playerRight
+    ###
+
+    if playerLeft > holeLeft && playerRight < holeRight
+      return false
+    else
+      console.log 'adjusting player to bar'
+      player.y -= diff
+      return true
+  return false
+
+movePlayerHorizontal = ->
+  moveSpeed = -1.0 if getKey() == "left"
+  moveSpeed = 1.0 if getKey() == "right"
 
   player.x += (moveSpeed * 15.0)
   player.x = 548 if player.x > 548
   player.x = 0 if player.x < 0
 
+moveBars = ->
+  blocked = false
+  for line in lines
+    [leftBar, rightBar] = line
+
+    leftBar.y -= 2
+    rightBar.y -= 2
+
+    thisBlocked = movePlayerVertical(leftBar, rightBar)
+    if thisBlocked
+      blocked = true
+
+  if !blocked
+    console.log 'falling!'
+    player.y += gravity
+
+createBars = (elapsed) ->
   nextBar -= elapsed
   if nextBar <= 0
-    nextBar = 2000
-    bars.push(addBar(0, 600))
+    nextBar = 2500
+    lines.push(addLine(600, 10))
+
+window.tick = (elapsed) ->
+  moveBars()
+  movePlayerHorizontal()
+  createBars(elapsed)
+
   stage.update()
 
 window.onload = ->
