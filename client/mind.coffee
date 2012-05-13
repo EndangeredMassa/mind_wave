@@ -1,5 +1,5 @@
 moveSpeed = 0
-nextBar = 2500
+nextBar = 800
 lines = []
 bg = null
 player = null
@@ -7,7 +7,7 @@ stage = null
 currentKey = null
 charWidth = 15
 lineWidth = 41
-gravity = 10
+gravity = 300
 lastAttentionScore = 0
 lastMeditationScore = 0
 
@@ -130,20 +130,19 @@ movePlayerVertical = (leftBar, rightBar) ->
       return true
   return false
 
-movePlayerHorizontal = ->
+movePlayerHorizontal = (elapsed) ->
   moveSpeed = -1.0 if getKey() == "left"
   moveSpeed = 1.0 if getKey() == "right"
 
-  player.x += (moveSpeed * 15.0)
+  player.x += (moveSpeed * 600.0) * elapsed
   player.x = 548 if player.x > 548
   player.x = 0 if player.x < 0
 
-moveBars = ->
+moveBars = (elapsed, barVelocity) ->
   blocked = false
   for line in lines
     [leftBar, rightBar] = line
 
-    barVelocity = parseInt(getDanger() * 5 + 1, 10)
     leftBar.y -= barVelocity
     rightBar.y -= barVelocity
 
@@ -152,7 +151,7 @@ moveBars = ->
       blocked = true
 
   if !blocked
-    player.y += gravity
+    player.y += gravity * elapsed
 
   lowerBound = (570 - player.height)
   if player.y > lowerBound
@@ -161,13 +160,15 @@ moveBars = ->
 createBars = (elapsed) ->
   nextBar -= elapsed
   if nextBar <= 0
-    nextBar = 2500
+    nextBar = 800
     lines.push(addLine())
 
-window.tick = (elapsed) ->
-  moveBars()
-  movePlayerHorizontal()
-  createBars(elapsed)
+window.tick = (elapsedMs) ->
+  elapsedSec = elapsedMs / 1000
+  barVelocity = parseInt((getDanger() * 200 + 100) * elapsedSec, 10)
+  moveBars(elapsedSec, barVelocity)
+  movePlayerHorizontal(elapsedSec)
+  createBars(elapsedMs)
 
   stage.update()
 

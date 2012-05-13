@@ -3,7 +3,7 @@
 
   moveSpeed = 0;
 
-  nextBar = 2500;
+  nextBar = 800;
 
   lines = [];
 
@@ -19,7 +19,7 @@
 
   lineWidth = 41;
 
-  gravity = 10;
+  gravity = 300;
 
   lastAttentionScore = 0;
 
@@ -166,27 +166,26 @@
     return false;
   };
 
-  movePlayerHorizontal = function() {
+  movePlayerHorizontal = function(elapsed) {
     if (getKey() === "left") moveSpeed = -1.0;
     if (getKey() === "right") moveSpeed = 1.0;
-    player.x += moveSpeed * 15.0;
+    player.x += (moveSpeed * 600.0) * elapsed;
     if (player.x > 548) player.x = 548;
     if (player.x < 0) return player.x = 0;
   };
 
-  moveBars = function() {
-    var barVelocity, blocked, leftBar, line, lowerBound, rightBar, thisBlocked, _i, _len;
+  moveBars = function(elapsed, barVelocity) {
+    var blocked, leftBar, line, lowerBound, rightBar, thisBlocked, _i, _len;
     blocked = false;
     for (_i = 0, _len = lines.length; _i < _len; _i++) {
       line = lines[_i];
       leftBar = line[0], rightBar = line[1];
-      barVelocity = parseInt(getDanger() * 5 + 1, 10);
       leftBar.y -= barVelocity;
       rightBar.y -= barVelocity;
       thisBlocked = movePlayerVertical(leftBar, rightBar);
       if (thisBlocked) blocked = true;
     }
-    if (!blocked) player.y += gravity;
+    if (!blocked) player.y += gravity * elapsed;
     lowerBound = 570 - player.height;
     if (player.y > lowerBound) return player.y = lowerBound;
   };
@@ -194,15 +193,18 @@
   createBars = function(elapsed) {
     nextBar -= elapsed;
     if (nextBar <= 0) {
-      nextBar = 2500;
+      nextBar = 800;
       return lines.push(addLine());
     }
   };
 
-  window.tick = function(elapsed) {
-    moveBars();
-    movePlayerHorizontal();
-    createBars(elapsed);
+  window.tick = function(elapsedMs) {
+    var barVelocity, elapsedSec;
+    elapsedSec = elapsedMs / 1000;
+    barVelocity = parseInt((getDanger() * 200 + 100) * elapsedSec, 10);
+    moveBars(elapsedSec, barVelocity);
+    movePlayerHorizontal(elapsedSec);
+    createBars(elapsedMs);
     return stage.update();
   };
 
