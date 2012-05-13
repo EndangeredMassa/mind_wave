@@ -114,7 +114,7 @@
   addLine = function() {
     var difficulty, gap;
     difficulty = getDifficulty();
-    gap = parseInt(difficulty * 7 + 6, 10);
+    gap = parseInt(difficulty * 8 + 6, 10);
     return renderLine(600, rand(1, 20), gap);
   };
 
@@ -234,7 +234,7 @@
   window.tick = function(elapsedMs) {
     var barVelocity, elapsedSec;
     elapsedSec = elapsedMs / 1000;
-    barVelocity = parseInt((getDanger() * 200 + 100) * elapsedSec, 10);
+    barVelocity = parseInt((getDanger() * 400 + 100) * elapsedSec, 10);
     moveBars(elapsedSec, barVelocity);
     movePlayerHorizontal(elapsedSec);
     createBars(elapsedMs);

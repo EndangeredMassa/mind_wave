@@ -34,14 +34,16 @@ host = '127.0.0.1'
 config = '{"enableRawOutput": false, "format": "Json"}'
 
 mindwave = net.createConnection(port, host)
+mindwave.setEncoding('ascii')
+
 
 currentChunk = ''
-mindwave.on 'data', (rawData) ->
-  return if browserClients.length == 0
-  currentChunk += rawData.toString()
+counter = 0
+getMindwaveData = ->
   lefts = 0
   rights = 0
   data = null
+  counter++
   for char, index in currentChunk
     lefts++ if char == '{'
     rights++ if char == '}'
@@ -49,6 +51,16 @@ mindwave.on 'data', (rawData) ->
       obj = currentChunk.substr(0, index+1)
       currentChunk = currentChunk.substr(index+1)
       data = JSON.parse(obj)
+
+      return data
+
+  return null
+
+mindwave.on 'data', (rawData) ->
+  currentChunk += rawData.toString()
+  #data = JSON.parse(rawData.toString())
+
+  data = getMindwaveData()
 
   return if !data || !data.eSense
   for client in browserClients

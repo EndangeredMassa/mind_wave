@@ -83,7 +83,7 @@ getDanger = ->
 
 addLine = ->
   difficulty = getDifficulty()
-  gap = parseInt(difficulty * 7 + 6, 10)
+  gap = parseInt(difficulty * 8 + 6, 10)
   renderLine(600, rand(1,20), gap)
 
 renderLine = (y, gapPosition, gapSize) ->
@@ -197,7 +197,7 @@ updateScore = (elapsed) ->
 
 window.tick = (elapsedMs) ->
   elapsedSec = elapsedMs / 1000
-  barVelocity = parseInt((getDanger() * 200 + 100) * elapsedSec, 10)
+  barVelocity = parseInt((getDanger() * 400 + 100) * elapsedSec, 10)
   moveBars(elapsedSec, barVelocity)
   movePlayerHorizontal(elapsedSec)
   createBars(elapsedMs)
