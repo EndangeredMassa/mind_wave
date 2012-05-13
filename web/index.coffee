@@ -2,6 +2,7 @@ express = require('express')
 routes = require('./routes')
 net = require 'net'
 io = require('socket.io').listen(8080)
+io.set('log level', 1)
 
 clients = []
 io.sockets.on 'connection', (socket) ->
@@ -31,7 +32,6 @@ host = '127.0.0.1'
 config = '{"enableRawOutput": false, "format": "Json"}'
 
 mindwave = net.createConnection(port, host)
-console.log('Socket created.')
 
 mindwave.on 'data', (rawData) ->
   data = JSON.parse(rawData.toString())
