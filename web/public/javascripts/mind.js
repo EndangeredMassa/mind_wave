@@ -54,9 +54,9 @@
     parentRender.call(this, canvas, time);
     attentionContext = canvas.getContext('2d');
     attentionContext.save();
-    attentionContext.font = '14px bold "Lucida Grande", Helvetica, Arial, sans-serif';
-    attentionContext.fillStyle = '#aaaaaa';
-    attentionContext.fillText(this.title, 0, 50);
+    attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif';
+    attentionContext.fillStyle = '#777777';
+    attentionContext.fillText(this.title, 250, 100);
     return attentionContext.restore();
   };
 
@@ -161,7 +161,7 @@
   };
 
   addBar = function(x, y, width) {
-    var bar, text;
+    var bar, rect, text;
     text = story.substr(storyPosition, width);
     storyPosition += width;
     if (storyPosition >= maxStoryPosition) storyPosition = 0;
@@ -171,7 +171,17 @@
     bar.width = width;
     bar.height = 24;
     stage.addChild(bar);
-    return bar;
+    rect = new Shape();
+    rect.graphics.beginFill(Graphics.getRGB(0, 255, 0));
+    rect.graphics.rect(0, 0, bar.getMeasuredWidth(), bar.height + 5);
+    rect.alpha = 0.5;
+    rect.x = bar.x;
+    rect.y = bar.y - bar.height;
+    stage.addChild(rect);
+    return {
+      bar: bar,
+      rect: rect
+    };
   };
 
   window.addEventListener('keydown', function(e) {
@@ -207,12 +217,12 @@
   movePlayerVertical = function(leftBar, rightBar) {
     var barTop, diff, holeLeft, holeRight, onBarLevel, playerBottom, playerLeft, playerRight;
     playerBottom = player.y + player.height;
-    barTop = leftBar.y - leftBar.height;
+    barTop = leftBar.bar.y - leftBar.bar.height;
     diff = playerBottom - barTop;
     onBarLevel = diff >= 0 && diff <= 14;
     if (onBarLevel) {
-      holeLeft = leftBar.x + (leftBar.width * charWidth);
-      holeRight = rightBar.x;
+      holeLeft = leftBar.bar.x + (leftBar.bar.getMeasuredWidth());
+      holeRight = rightBar.bar.x;
       playerLeft = player.x;
       playerRight = player.x + player.width;
       if (playerLeft > holeLeft && playerRight < holeRight) {
@@ -251,8 +261,10 @@
     for (_i = 0, _len = lines.length; _i < _len; _i++) {
       line = lines[_i];
       leftBar = line[0], rightBar = line[1];
-      leftBar.y -= barVelocity;
-      rightBar.y -= barVelocity;
+      leftBar.bar.y -= barVelocity;
+      rightBar.bar.y -= barVelocity;
+      leftBar.rect.y = leftBar.bar.y - leftBar.bar.height;
+      rightBar.rect.y = rightBar.bar.y - rightBar.bar.height;
       thisBlocked = movePlayerVertical(leftBar, rightBar);
       if (thisBlocked) blocked = true;
     }
