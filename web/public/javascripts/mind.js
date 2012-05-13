@@ -218,12 +218,6 @@
       g: 0,
       b: 255
     });
-    /*
-      testCtx = $('test').getContext('2d')
-      testCtx.fillRect(0, 0, $('test').width, $('test').height)
-      testCtx.strokeStyle = '#ffffff'
-      testCtx.strokeText('Test', 0, 1)
-    */
     host = window.location.host;
     socket = io.connect("http://" + host);
     socket.on("data", function(data) {

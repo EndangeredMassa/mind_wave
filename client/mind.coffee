@@ -22,7 +22,7 @@ SmoothieChart.prototype.render = (canvas, time) ->
   parentRender.call(this, canvas, time)
   attentionContext = canvas.getContext('2d')
   attentionContext.save()
-  attentionContext.font = '14px bold "Lucida Grande", Helvetica, Arial, sans-serif';
+  attentionContext.font = '14px bold "Lucida Grande", Helvetica, Arial, sans-serif'
   attentionContext.fillStyle = '#aaaaaa'
   attentionContext.fillText(this.title, 0, 50)
   attentionContext.restore()
@@ -174,13 +174,6 @@ window.tick = (elapsed) ->
 window.onload = ->
   attention = createSeries($("attention"), 'Attention', { r: 255, g: 0, b: 0 })
   meditation = createSeries($("meditation"), 'Meditation', { r: 0, g: 0, b: 255 })
-
-  ###
-  testCtx = $('test').getContext('2d')
-  testCtx.fillRect(0, 0, $('test').width, $('test').height)
-  testCtx.strokeStyle = '#ffffff'
-  testCtx.strokeText('Test', 0, 1)
-  ###
 
   host = window.location.host
   socket = io.connect("http://#{host}")
