@@ -13,6 +13,12 @@ score = 0
 stop = false
 charts = []
 
+story = """
+"I admit," said he - when I mentioned to him this objection - "I admit the truth of your critic\'s facts, but I deny his conclusions. It is true that we have really in Flatland a Third unrecognized Dimension called 'height,' just as it is also true that you have really in Spaceland a Fourth unrecognized Dimension, called by no name at present, but which I will call 'extra-height'. But we can no more take cognizance of our 'height' then you can of your 'extra-height'. Even I - who have been in Spaceland, and have had the privilege of understanding for twenty-four hours the meaning of \'height\' - even I cannot now comprehend it, nor realize it by the sense of sight or by any process of reason; I can but apprehend it by faith. "The reason is obvious. Dimension implies direction, implies measurement, implies the more and the less. Now, all our lines are equally and infinitesimally thick (or high, whichever you like); consequently, there is nothing in them to lead our minds to the conception of that Dimension. No 'delicate micrometer' - as has been suggested by one too hasty Spaceland critic - would in the least avail us; for we should not know what to measure, nor in what direction. When we see a Line, we see something that is long and bright; brightness, as well as length, is necessary to the existence of a Line; if the brightness vanishes, the Line is extinguished. Hence, all my Flatland friends - when I talk to them about the unrecognized Dimension which is somehow visible in a Line - say, 'Ah, you mean brightness': and when I reply, 'No, I mean a real Dimension,' they at once retort 'Then measure it, or tell us in what direction it extends'; and this silences me, for I can do neither. Only yesterday, when the Chief Circle (in other words our High Priest) came to inspect the State Prison and paid me his seventh annual visit, and when for the seventh time he put me the question, 'Was I any better?' I tried to prove to him that he was 'high,' as well as long and broad, although he did not know it. But what was his reply? 'You say I am "high"; measure my "highness" and I will believe you.' What could I do? How could I meet his challenge? I was crushed; and he left the room triumphant. "Does this still seem strange to you? Then put yourself in a similar position. Suppose a person of the Fourth Dimension, condescending to visit you, were to say, `Whenever you open your eyes, you see a Plane (which is of Two Dimensions) and you infer a Solid (which is of Three); but in reality you also see (though you do not recognize) a Fourth Dimension, which is not colour nor brightness nor anything of the kind, but a true Dimension, although I cannot point out to you its direction, nor can you possibly measure it.' What would you say to such a visitor? Would not you have him locked up? Well, that is my fate: and it is as natural for us Flatlanders to lock up a Square for preaching the Third Dimension, as it is for you Spacelanders to lock up a Cube for preaching the Fourth. Alas, how strong a family likeness runs through blind and persecuting humanity in all Dimensions! Points, Lines, Squares, Cubes, Extra- Cubes - we are all liable to the same errors, all alike the Slaves of our respective Dimensional prejudices, as one of your Spaceland poets has said - 'One touch of Nature makes all worlds akin'."
+"""
+storyPosition = 0
+maxStoryPosition = storyPosition.length - 1
+
 $ = (id) ->
   document.getElementById id
 
@@ -91,7 +97,11 @@ renderLine = (y, gapPosition, gapSize) ->
   [leftBar, rightBar]
 
 addBar = (x, y, width) ->
-  text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substring(0, width)
+  text = story.substr(storyPosition, width)
+  storyPosition += width
+  if storyPosition >= maxStoryPosition
+    storyPosition = 0
+
   bar = new Text(text, "30px bold 'Courier New'", "#0F0")
   bar.x = x
   bar.y = y
