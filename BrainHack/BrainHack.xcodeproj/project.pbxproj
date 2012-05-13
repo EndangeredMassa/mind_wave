@@ -16,6 +16,7 @@
 		60929EB7155F0A2800659A3F /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60929EB5155F0A2800659A3F /* MainStoryboard.storyboard */; };
 		60929EBA155F0A2800659A3F /* BHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60929EB9155F0A2800659A3F /* BHViewController.m */; };
 		60929EC2155F122E00659A3F /* BHConnectionConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60929EC1155F122E00659A3F /* BHConnectionConfigViewController.m */; };
+		60929EC8155F3BB000659A3F /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60929EC7155F3BB000659A3F /* CoreMotion.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		60929EB9155F0A2800659A3F /* BHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BHViewController.m; sourceTree = "<group>"; };
 		60929EC0155F122E00659A3F /* BHConnectionConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BHConnectionConfigViewController.h; sourceTree = "<group>"; };
 		60929EC1155F122E00659A3F /* BHConnectionConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BHConnectionConfigViewController.m; sourceTree = "<group>"; };
+		60929EC7155F3BB000659A3F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60929EC8155F3BB000659A3F /* CoreMotion.framework in Frameworks */,
 				60929EA4155F0A2800659A3F /* UIKit.framework in Frameworks */,
 				60929EA6155F0A2800659A3F /* Foundation.framework in Frameworks */,
 				60929EA8155F0A2800659A3F /* CoreGraphics.framework in Frameworks */,
@@ -70,6 +73,7 @@
 		60929EA2155F0A2800659A3F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				60929EC7155F3BB000659A3F /* CoreMotion.framework */,
 				60929EA3155F0A2800659A3F /* UIKit.framework */,
 				60929EA5155F0A2800659A3F /* Foundation.framework */,
 				60929EA7155F0A2800659A3F /* CoreGraphics.framework */,
@@ -283,6 +287,7 @@
 				60929EBF155F0A2800659A3F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

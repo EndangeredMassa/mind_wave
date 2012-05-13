@@ -11,10 +11,17 @@
 extern NSString *BHServerIPAddrKey;
 extern NSString *BHServerPortKey;
 
+@class CMMotionManager;
+
 @interface BHViewController : UIViewController
+{
+    NSOutputStream *_outStream;
+    NSInputStream *_inStream;
+}
 
 @property (nonatomic, strong) NSString *ipAddress;
 @property (nonatomic) int32_t port;
+@property (nonatomic, strong) CMMotionManager *motionMgr;
 
 - (void)startClient;
 

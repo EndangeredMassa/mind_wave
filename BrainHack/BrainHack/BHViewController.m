@@ -8,6 +8,7 @@
 
 #import "BHViewController.h"
 #import "BHConnectionConfigViewController.h"
+#import <CoreMotion/CoreMotion.h>
 
 NSString *BHServerIPAddrKey = @"BHServerIPAddrKey";
 NSString *BHServerPortKey = @"BHServerPortKey";
@@ -17,6 +18,8 @@ NSString *BHServerPortKey = @"BHServerPortKey";
 @end
 
 @implementation BHViewController
+
+@synthesize motionMgr = _motionMgr;
 
 + (void)initialize
 {
@@ -50,6 +53,32 @@ NSString *BHServerPortKey = @"BHServerPortKey";
 
 - (void)viewDidLoad
 {
+    self.motionMgr = [[CMMotionManager alloc] init];
+    if (self.motionMgr.deviceMotionAvailable) {
+        self.motionMgr.deviceMotionUpdateInterval = 0.01666;
+        [self.motionMgr startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:
+         ^(CMDeviceMotion *motion, NSError *err) {
+             if (err) {
+                 NSLog(@"Motion error: %@", err.localizedDescription);
+                 return;
+             }
+             double adjustedYaw = motion.attitude.pitch / M_PI_4;
+             adjustedYaw = adjustedYaw > 1.0 ? 1.0 : adjustedYaw;
+             adjustedYaw = adjustedYaw < -1.0 ? -1.0 : adjustedYaw;
+             
+             if (_outStream.streamStatus == NSStreamStatusOpen) {
+#ifdef DEBUG
+                 NSLog(@"Yaw val: %f", adjustedYaw);
+#endif
+                 NSString *yawString = [NSString stringWithFormat:@"%f", adjustedYaw];
+                 NSData *yawData = [yawString dataUsingEncoding:NSUTF8StringEncoding];
+                 int result = [_outStream write:yawData.bytes maxLength:yawData.length];
+                 if (result == -1) {
+                     NSLog(@"Write failed: %@", _outStream.streamError.localizedDescription);
+                 }
+             }
+         }];
+    }
     [super viewDidLoad];
 }
 
@@ -61,7 +90,10 @@ NSString *BHServerPortKey = @"BHServerPortKey";
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return YES;
+    if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -70,6 +102,8 @@ NSString *BHServerPortKey = @"BHServerPortKey";
     BHConnectionConfigViewController *dest = segue.destinationViewController;
     dest.popoverController = popoverSegue.popoverController;
     dest.parent = self;
+    dest.ipAddressField.text = self.ipAddress;
+    dest.portField.text = [NSString stringWithFormat:@"%d", self.port];
 }
 
 - (void)startClient
@@ -80,16 +114,16 @@ NSString *BHServerPortKey = @"BHServerPortKey";
                                        kCFAllocatorDefault,
                                        (__bridge CFStringRef)self.ipAddress,
                                        self.port, &readStream, &writeStream);
-    NSOutputStream *outStream = (__bridge_transfer NSOutputStream *)writeStream;
-    NSData *data = [@"Test" dataUsingEncoding:NSUTF8StringEncoding];
-    [outStream open];
-    int result = [outStream write:data.bytes maxLength:data.length];
-    if (result != -1) {
-        NSLog(@"Write successful.");
-    }
-    else {
-        NSLog(@"Write failed: %@", outStream.streamError.localizedDescription);
-    }
+    _outStream = (__bridge_transfer NSOutputStream *)writeStream;
+    _inStream = (__bridge_transfer NSInputStream *)readStream;
+
+    [_outStream open];
+}
+
+- (void)stopClient
+{
+    [_outStream close];
+    [_inStream close];
 }
 
 @end
