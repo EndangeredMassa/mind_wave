@@ -117,7 +117,7 @@ SmoothieChart.prototype.stop = function() {
   }
 };
 
-SmoothieChart.prototype.render = function(canvas, time) {
+SmoothieChart.prototype.render = function(canvas, time, afterBackground) {
   var canvasContext = canvas.getContext("2d");
   var options = this.options;
   var dimensions = {top: 0, left: 0, width: canvas.clientWidth, height: canvas.clientHeight};
@@ -214,6 +214,10 @@ SmoothieChart.prototype.render = function(canvas, time) {
   this.currentVisMinValue += options.scaleSmoothing*(minValue - this.currentVisMinValue);
   var valueRange = this.currentValueRange;
   var visMinValue = this.currentVisMinValue;
+
+	if (afterBackground) {
+		afterBackground();
+	}
 
   // For each data set...
   for (var d = 0; d < this.seriesSet.length; d++) {

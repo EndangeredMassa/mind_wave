@@ -28,14 +28,15 @@ rand = (min, max) ->
 
 parentRender = SmoothieChart.prototype.render
 SmoothieChart.prototype.render = (canvas, time) ->
-  parentRender.call(this, canvas, time)
-  attentionContext = canvas.getContext('2d')
-  attentionContext.save()
-  if this.title
-    attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif'
-    attentionContext.fillStyle = '#777777'
-    attentionContext.fillText(this.title, 210, 100)
-    attentionContext.restore()
+  that = this
+  parentRender.call this, canvas, time, () ->
+    attentionContext = canvas.getContext('2d')
+    attentionContext.save()
+    if this.title
+      attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif'
+      attentionContext.fillStyle = '#555555'
+      attentionContext.fillText(that.title, 250, 100)
+      attentionContext.restore()
 
 createSeries = (canvas, title, color) ->
   context = canvas.getContext('2d')
@@ -168,12 +169,11 @@ getKey = ->
   return "left" if currentKey == 37
   "right" if currentKey == 39
 
-movePlayerVertical = (leftBar, rightBar) ->
+movePlayerVertical = (leftBar, rightBar, oldY) ->
   playerBottom = player.y + player.height
 
   barTop = leftBar.bar.y - leftBar.bar.height
-  diff = playerBottom - barTop
-  onBarLevel = diff >= 0 && diff <= 14
+  onBarLevel = barTop <= playerBottom <= oldY
 
   if onBarLevel
     holeLeft = leftBar.bar.x + (leftBar.bar.getMeasuredWidth())
@@ -184,7 +184,7 @@ movePlayerVertical = (leftBar, rightBar) ->
     if playerLeft > holeLeft && playerRight < holeRight
       return false
     else
-      player.y -= diff
+      player.y = barTop - player.height
       if player.y <= 0
         gameOver()
       return true
@@ -207,19 +207,31 @@ movePlayerHorizontal = (elapsed) ->
     else if player.x == oldX && player.currentAnimation != 'idle'
       player.gotoAndPlay('idle')
 
-moveBars = (elapsed, barVelocity) ->
+moveBars = (elapsed, barVelocity, oldY) ->
   blocked = false
-  for line in lines
+  length = lines.length
+  i = 0
+  console.log 'Check bars'
+  while i < length
+    line = lines[i]
     [leftBar, rightBar] = line
+    if leftBar.bar.y < 0
+      lines.splice(i, 1)
+      stage.removeChild(leftBar.bar, rightBar.bar, leftBar.rect, rightBar.rect)
+      length--
+      continue
 
+    oldY = leftBar.bar.y
     leftBar.bar.y -= barVelocity
     rightBar.bar.y -= barVelocity
     leftBar.rect.y = leftBar.bar.y - leftBar.bar.height
     rightBar.rect.y = rightBar.bar.y - rightBar.bar.height
 
-    thisBlocked = movePlayerVertical(leftBar, rightBar)
-    if thisBlocked
-      blocked = true
+    if !blocked
+      thisBlocked = movePlayerVertical(leftBar, rightBar, oldY)
+      if thisBlocked
+        blocked = true
+    i++
 
   if !blocked
     if player.currentAnimation != 'falling'
