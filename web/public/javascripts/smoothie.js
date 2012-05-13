@@ -44,7 +44,7 @@ function TimeSeries(options) {
   options.resetBounds = options.resetBounds || true; // Enable or disable the resetBounds timer
   this.options = options;
   this.data = [];
-  
+
   this.maxValue = Number.NaN; // The maximum value ever seen in this time series.
   this.minValue = Number.NaN; // The minimum value ever seen in this time series.
 
@@ -164,6 +164,7 @@ SmoothieChart.prototype.render = function(canvas, time) {
   }
   */
 
+  /*
   // Horizontal (value) dividers.
   for (var v = 1; v < options.grid.verticalSections; v++) {
     var gy = Math.round(v * dimensions.height / options.grid.verticalSections);
@@ -173,6 +174,7 @@ SmoothieChart.prototype.render = function(canvas, time) {
     canvasContext.stroke();
     canvasContext.closePath();
   }
+  */
   // Bounding rectangle.
   canvasContext.beginPath();
   canvasContext.strokeRect(0, 0, dimensions.width, dimensions.height);

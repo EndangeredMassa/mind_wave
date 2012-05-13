@@ -54,10 +54,12 @@
     parentRender.call(this, canvas, time);
     attentionContext = canvas.getContext('2d');
     attentionContext.save();
-    attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif';
-    attentionContext.fillStyle = '#777777';
-    attentionContext.fillText(this.title, 250, 100);
-    return attentionContext.restore();
+    if (this.title) {
+      attentionContext.font = '24px bold "Lucida Grande", Helvetica, Arial, sans-serif';
+      attentionContext.fillStyle = '#777777';
+      attentionContext.fillText(this.title, 210, 100);
+      return attentionContext.restore();
+    }
   };
 
   createSeries = function(canvas, title, color) {
@@ -311,15 +313,35 @@
   };
 
   window.onload = function() {
-    var attention, host, meditation, socket;
+    var attention, delta, highAlpha, highBeta, highGamma, host, meditation, socket;
     story = $('text').innerText;
     maxStoryPosition = story.length - 1;
     attention = createSeries($("attention"), 'Attention', {
-      r: 70,
-      g: 70,
-      b: 70
+      r: 255,
+      g: 0,
+      b: 0
     });
     meditation = createSeries($("meditation"), 'Meditation', {
+      r: 0,
+      g: 0,
+      b: 255
+    });
+    highAlpha = createSeries($("alpha"), null, {
+      r: 125,
+      g: 125,
+      b: 125
+    });
+    highGamma = createSeries($("gamma"), null, {
+      r: 125,
+      g: 125,
+      b: 125
+    });
+    highBeta = createSeries($("beta"), null, {
+      r: 125,
+      g: 125,
+      b: 125
+    });
+    delta = createSeries($("delta-theta"), null, {
       r: 125,
       g: 125,
       b: 125
@@ -333,7 +355,11 @@
       lastMeditationScore = data.eSense.meditation;
       currentTime = new Date().getTime();
       attention.append(currentTime, data.eSense.attention);
-      return meditation.append(currentTime, data.eSense.meditation);
+      meditation.append(currentTime, data.eSense.meditation);
+      highAlpha.append(currentTime, data.eegPower.highAlpha);
+      highGamma.append(currentTime, data.eegPower.highGamma);
+      highBeta.append(currentTime, data.eegPower.highBeta);
+      return delta.append(currentTime, data.eegPower.delta);
     });
     socket.on("moveSpeed", function(newMoveSpeed) {
       return moveSpeed = parseFloat(newMoveSpeed);

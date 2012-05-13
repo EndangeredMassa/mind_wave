@@ -7,18 +7,20 @@ a {
   color: #00B7FF;
 }
 
-.graph {
-
+#game {
+  border: 1px solid black;
 }
 
-canvas {
-
+#score {
+  text-align:center;
+  margin: 10px;
 }
 
 #text {
   position: absolute;
-  top: 650px;
-  width: 600px;
+  text-align: justify;
+  top: 656px;
+  width: 612px;
 }
 
 h3 {
