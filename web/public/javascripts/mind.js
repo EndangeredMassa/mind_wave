@@ -1,5 +1,5 @@
 (function() {
-  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getKey, gravity, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, player, rand, runGame, stage;
+  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getKey, gravity, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, player, rand, runGame, stage;
 
   moveSpeed = 0;
 
@@ -15,7 +15,9 @@
 
   currentKey = null;
 
-  charWidth = 20;
+  charWidth = 15;
+
+  lineWidth = 41;
 
   gravity = 10;
 
@@ -73,20 +75,23 @@
     player.width = 64;
     player.height = 64;
     stage.addChild(bg, player);
-    lines.push(addLine(600, 10));
+    lines.push(addLine(600, rand(1, 20), rand(6, 12)));
     return stage.update();
   };
 
-  addLine = function(y, gap) {
-    var leftBar, rightBar;
-    leftBar = addBar(0, y, 15);
-    rightBar = addBar(400, y, 10);
+  addLine = function(y, gapPosition, gapSize) {
+    var leftBar, leftWidth, rightBar, rightWidth, rightX;
+    leftWidth = gapPosition;
+    rightX = (gapPosition + gapSize) * charWidth;
+    rightWidth = lineWidth - leftWidth - gapSize;
+    leftBar = addBar(0, y, leftWidth);
+    rightBar = addBar(rightX, y, rightWidth);
     return [leftBar, rightBar];
   };
 
   addBar = function(x, y, width) {
     var bar, text;
-    text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substr(width);
+    text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substring(0, width);
     bar = new Text(text, "30px bold Courier New", "#0F0");
     bar.x = x;
     bar.y = y;
@@ -108,33 +113,17 @@
   movePlayerVertical = function(leftBar, rightBar) {
     var barTop, diff, holeLeft, holeRight, onBarLevel, playerBottom, playerLeft, playerRight;
     playerBottom = player.y + player.height;
-    /*
-      console.log 'player.y='+player.y
-      console.log 'player-height='+player.height
-      console.log 'bar.y='+leftBar.y
-      console.log 'playerBottom='+playerBottom
-    */
     barTop = leftBar.y - leftBar.height;
     diff = playerBottom - barTop;
-    onBarLevel = diff <= 10 && diff >= 0;
+    onBarLevel = diff >= 0 && diff <= 14;
     if (onBarLevel) {
       holeLeft = leftBar.x + (leftBar.width * charWidth);
       holeRight = rightBar.x;
       playerLeft = player.x;
       playerRight = player.x + player.width;
-      /*
-          console.log 'x: ' + rightBar.x
-          console.log 'width: ' + rightBar.width
-      
-          console.log 'holeLeft: ' + holeLeft
-          console.log 'holeRight:' + holeRight
-          console.log 'playerLeft: ' + playerLeft
-          console.log 'playerRight: ' + playerRight
-      */
       if (playerLeft > holeLeft && playerRight < holeRight) {
         return false;
       } else {
-        console.log('adjusting player to bar');
         player.y -= diff;
         return true;
       }
@@ -151,7 +140,7 @@
   };
 
   moveBars = function() {
-    var blocked, leftBar, line, rightBar, thisBlocked, _i, _len;
+    var blocked, leftBar, line, lowerBound, rightBar, thisBlocked, _i, _len;
     blocked = false;
     for (_i = 0, _len = lines.length; _i < _len; _i++) {
       line = lines[_i];
@@ -161,17 +150,16 @@
       thisBlocked = movePlayerVertical(leftBar, rightBar);
       if (thisBlocked) blocked = true;
     }
-    if (!blocked) {
-      console.log('falling!');
-      return player.y += gravity;
-    }
+    if (!blocked) player.y += gravity;
+    lowerBound = 570 - player.height;
+    if (player.y > lowerBound) return player.y = lowerBound;
   };
 
   createBars = function(elapsed) {
     nextBar -= elapsed;
     if (nextBar <= 0) {
       nextBar = 2500;
-      return lines.push(addLine(600, 10));
+      return lines.push(addLine(600, rand(1, 20), rand(6, 12)));
     }
   };
 

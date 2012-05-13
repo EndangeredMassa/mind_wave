@@ -5,7 +5,8 @@ bg = null
 player = null
 stage = null
 currentKey = null
-charWidth = 20
+charWidth = 15
+lineWidth = 41
 gravity = 10
 
 $ = (id) ->
@@ -57,17 +58,21 @@ buildInterfaceIfReady = ->
   player.width = 64
   player.height = 64
   stage.addChild bg, player
-  lines.push(addLine(600, 10))
+  lines.push(addLine(600, rand(1,20), rand(6,12)))
   stage.update()
 
-addLine = (y, gap) ->
-  leftBar = addBar(0, y, 15)
-  rightBar = addBar(400, y, 10)
+addLine = (y, gapPosition, gapSize) ->
+  leftWidth = gapPosition
+  rightX = (gapPosition + gapSize) * charWidth
+  rightWidth = lineWidth - leftWidth - gapSize
+
+  leftBar = addBar(0, y, leftWidth)
+  rightBar = addBar(rightX, y, rightWidth)
 
   [leftBar, rightBar]
 
 addBar = (x, y, width) ->
-  text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substr(width)
+  text = "a8be76ac87b6a897e6ca98e7b628bcdeb".substring(0, width)
   bar = new Text(text, "30px bold Courier New", "#0F0")
   bar.x = x
   bar.y = y
@@ -86,16 +91,9 @@ getKey = ->
 movePlayerVertical = (leftBar, rightBar) ->
   playerBottom = player.y + player.height
 
-  ###
-  console.log 'player.y='+player.y
-  console.log 'player-height='+player.height
-  console.log 'bar.y='+leftBar.y
-  console.log 'playerBottom='+playerBottom
-  ###
-
   barTop = leftBar.y - leftBar.height
   diff = playerBottom - barTop
-  onBarLevel = (diff <= 10 && diff >= 0)
+  onBarLevel = diff >= 0 && diff <= 14
 
   if onBarLevel
     holeLeft = leftBar.x + (leftBar.width * charWidth)
@@ -103,20 +101,9 @@ movePlayerVertical = (leftBar, rightBar) ->
     playerLeft = player.x
     playerRight = player.x + player.width
 
-    ###
-    console.log 'x: ' + rightBar.x
-    console.log 'width: ' + rightBar.width
-
-    console.log 'holeLeft: ' + holeLeft
-    console.log 'holeRight:' + holeRight
-    console.log 'playerLeft: ' + playerLeft
-    console.log 'playerRight: ' + playerRight
-    ###
-
     if playerLeft > holeLeft && playerRight < holeRight
       return false
     else
-      console.log 'adjusting player to bar'
       player.y -= diff
       return true
   return false
@@ -142,14 +129,17 @@ moveBars = ->
       blocked = true
 
   if !blocked
-    console.log 'falling!'
     player.y += gravity
+
+  lowerBound = (570 - player.height)
+  if player.y > lowerBound
+    player.y = lowerBound
 
 createBars = (elapsed) ->
   nextBar -= elapsed
   if nextBar <= 0
     nextBar = 2500
-    lines.push(addLine(600, 10))
+    lines.push(addLine(600, rand(1,20), rand(6,12)))
 
 window.tick = (elapsed) ->
   moveBars()
