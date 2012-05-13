@@ -20,6 +20,7 @@ NSString *BHServerPortKey = @"BHServerPortKey";
 @implementation BHViewController
 
 @synthesize motionMgr = _motionMgr;
+@synthesize webView = _webView;
 
 + (void)initialize
 {
@@ -84,6 +85,7 @@ NSString *BHServerPortKey = @"BHServerPortKey";
 
 - (void)viewDidUnload
 {
+    [self setWebView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -116,7 +118,8 @@ NSString *BHServerPortKey = @"BHServerPortKey";
                                        self.port, &readStream, &writeStream);
     _outStream = (__bridge_transfer NSOutputStream *)writeStream;
     _inStream = (__bridge_transfer NSInputStream *)readStream;
-
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/", self.ipAddress]];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
     [_outStream open];
 }
 

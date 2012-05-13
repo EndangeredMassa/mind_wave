@@ -32,10 +32,18 @@
                                     </segue>
                                 </connections>
                             </button>
+                            <webView contentMode="scaleToFill" id="5Dj-w7-5E0">
+                                <rect key="frame" x="20" y="65" width="984" height="663"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </webView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
+                    <connections>
+                        <outlet property="webView" destination="5Dj-w7-5E0" id="AQX-Wj-Vnv"/>
+                    </connections>
                 </viewController>
             </objects>
         </scene>
@@ -114,6 +122,9 @@
         </class>
         <class className="BHViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/BHViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
+            </relationships>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

@@ -22,6 +22,7 @@ extern NSString *BHServerPortKey;
 @property (nonatomic, strong) NSString *ipAddress;
 @property (nonatomic) int32_t port;
 @property (nonatomic, strong) CMMotionManager *motionMgr;
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
 
 - (void)startClient;
 
