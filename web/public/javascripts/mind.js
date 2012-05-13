@@ -1,5 +1,5 @@
 (function() {
-  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getKey, gravity, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, player, rand, runGame, stage;
+  var $, addBar, addLine, bg, buildInterfaceIfReady, charWidth, createBars, createSeries, currentKey, getDanger, getDifficulty, getKey, gravity, lastAttentionScore, lastMeditationScore, lineWidth, lines, moveBars, movePlayerHorizontal, movePlayerVertical, moveSpeed, nextBar, player, rand, renderLine, runGame, stage;
 
   moveSpeed = 0;
 
@@ -21,12 +21,16 @@
 
   gravity = 10;
 
+  lastAttentionScore = 0;
+
+  lastMeditationScore = 0;
+
   $ = function(id) {
     return document.getElementById(id);
   };
 
   rand = function(min, max) {
-    return parseInt(Math.random() * max + min, 10);
+    return parseInt(Math.random() * (max - min) + min, 10);
   };
 
   createSeries = function(canvas) {
@@ -75,11 +79,26 @@
     player.width = 64;
     player.height = 64;
     stage.addChild(bg, player);
-    lines.push(addLine(600, rand(1, 20), rand(6, 12)));
+    lines.push(addLine());
     return stage.update();
   };
 
-  addLine = function(y, gapPosition, gapSize) {
+  getDifficulty = function() {
+    return lastAttentionScore / 100.0;
+  };
+
+  getDanger = function() {
+    return 1 - (lastMeditationScore / 100.0);
+  };
+
+  addLine = function() {
+    var difficulty, gap;
+    difficulty = getDifficulty();
+    gap = parseInt(difficulty * 7 + 6, 10);
+    return renderLine(600, rand(1, 20), gap);
+  };
+
+  renderLine = function(y, gapPosition, gapSize) {
     var leftBar, leftWidth, rightBar, rightWidth, rightX;
     leftWidth = gapPosition;
     rightX = (gapPosition + gapSize) * charWidth;
@@ -140,13 +159,14 @@
   };
 
   moveBars = function() {
-    var blocked, leftBar, line, lowerBound, rightBar, thisBlocked, _i, _len;
+    var barVelocity, blocked, leftBar, line, lowerBound, rightBar, thisBlocked, _i, _len;
     blocked = false;
     for (_i = 0, _len = lines.length; _i < _len; _i++) {
       line = lines[_i];
       leftBar = line[0], rightBar = line[1];
-      leftBar.y -= 2;
-      rightBar.y -= 2;
+      barVelocity = parseInt(getDanger() * 5 + 1, 10);
+      leftBar.y -= barVelocity;
+      rightBar.y -= barVelocity;
       thisBlocked = movePlayerVertical(leftBar, rightBar);
       if (thisBlocked) blocked = true;
     }
@@ -159,7 +179,7 @@
     nextBar -= elapsed;
     if (nextBar <= 0) {
       nextBar = 2500;
-      return lines.push(addLine(600, rand(1, 20), rand(6, 12)));
+      return lines.push(addLine());
     }
   };
 
@@ -180,6 +200,8 @@
     socket = io.connect("http://" + host);
     socket.on("data", function(data) {
       var currentTime;
+      lastAttentionScore = data.eSense.attention;
+      lastMeditationScore = data.eSense.meditation;
       currentTime = new Date().getTime();
       attention.append(currentTime, data.eSense.attention);
       meditation.append(currentTime, data.eSense.meditation);

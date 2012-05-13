@@ -8,12 +8,14 @@ currentKey = null
 charWidth = 15
 lineWidth = 41
 gravity = 10
+lastAttentionScore = 0
+lastMeditationScore = 0
 
 $ = (id) ->
   document.getElementById id
 
 rand = (min, max) ->
-  parseInt Math.random() * max + min, 10
+  parseInt(Math.random() * (max - min) + min, 10)
 
 createSeries = (canvas) ->
   r = rand(0, 255)
@@ -58,10 +60,21 @@ buildInterfaceIfReady = ->
   player.width = 64
   player.height = 64
   stage.addChild bg, player
-  lines.push(addLine(600, rand(1,20), rand(6,12)))
+  lines.push(addLine())
   stage.update()
 
-addLine = (y, gapPosition, gapSize) ->
+getDifficulty = ->
+  lastAttentionScore / 100.0
+
+getDanger = ->
+  1 - (lastMeditationScore / 100.0)
+
+addLine = ->
+  difficulty = getDifficulty()
+  gap = parseInt(difficulty * 7 + 6, 10)
+  renderLine(600, rand(1,20), gap)
+
+renderLine = (y, gapPosition, gapSize) ->
   leftWidth = gapPosition
   rightX = (gapPosition + gapSize) * charWidth
   rightWidth = lineWidth - leftWidth - gapSize
@@ -121,8 +134,9 @@ moveBars = ->
   for line in lines
     [leftBar, rightBar] = line
 
-    leftBar.y -= 2
-    rightBar.y -= 2
+    barVelocity = parseInt(getDanger() * 5 + 1, 10)
+    leftBar.y -= barVelocity
+    rightBar.y -= barVelocity
 
     thisBlocked = movePlayerVertical(leftBar, rightBar)
     if thisBlocked
@@ -139,7 +153,7 @@ createBars = (elapsed) ->
   nextBar -= elapsed
   if nextBar <= 0
     nextBar = 2500
-    lines.push(addLine(600, rand(1,20), rand(6,12)))
+    lines.push(addLine())
 
 window.tick = (elapsed) ->
   moveBars()
@@ -157,6 +171,10 @@ window.onload = ->
   host = window.location.host
   socket = io.connect("http://#{host}")
   socket.on "data", (data) ->
+
+    lastAttentionScore = data.eSense.attention
+    lastMeditationScore = data.eSense.meditation
+
     currentTime = new Date().getTime()
     attention.append currentTime, data.eSense.attention
     meditation.append currentTime, data.eSense.meditation
