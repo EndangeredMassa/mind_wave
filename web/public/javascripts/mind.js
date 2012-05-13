@@ -219,12 +219,11 @@
     if (currentKey === 39) return "right";
   };
 
-  movePlayerVertical = function(leftBar, rightBar) {
-    var barTop, diff, holeLeft, holeRight, onBarLevel, playerBottom, playerLeft, playerRight;
+  movePlayerVertical = function(leftBar, rightBar, oldY) {
+    var barTop, holeLeft, holeRight, onBarLevel, playerBottom, playerLeft, playerRight;
     playerBottom = player.y + player.height;
     barTop = leftBar.bar.y - leftBar.bar.height;
-    diff = playerBottom - barTop;
-    onBarLevel = diff >= 0 && diff <= 14;
+    onBarLevel = (barTop <= playerBottom && playerBottom <= oldY);
     if (onBarLevel) {
       holeLeft = leftBar.bar.x + (leftBar.bar.getMeasuredWidth());
       holeRight = rightBar.bar.x;
@@ -233,7 +232,7 @@
       if (playerLeft > holeLeft && playerRight < holeRight) {
         return false;
       } else {
-        player.y -= diff;
+        player.y = barTop - player.height;
         if (player.y <= 0) gameOver();
         return true;
       }
@@ -260,18 +259,31 @@
     }
   };
 
-  moveBars = function(elapsed, barVelocity) {
-    var blocked, leftBar, line, lowerBound, rightBar, thisBlocked, _i, _len;
+  moveBars = function(elapsed, barVelocity, oldY) {
+    var blocked, i, leftBar, length, line, lowerBound, rightBar, thisBlocked;
     blocked = false;
-    for (_i = 0, _len = lines.length; _i < _len; _i++) {
-      line = lines[_i];
+    length = lines.length;
+    i = 0;
+    console.log('Check bars');
+    while (i < length) {
+      line = lines[i];
       leftBar = line[0], rightBar = line[1];
+      if (leftBar.bar.y < 0) {
+        lines.splice(i, 1);
+        stage.removeChild(leftBar.bar, rightBar.bar, leftBar.rect, rightBar.rect);
+        length--;
+        continue;
+      }
+      oldY = leftBar.bar.y;
       leftBar.bar.y -= barVelocity;
       rightBar.bar.y -= barVelocity;
       leftBar.rect.y = leftBar.bar.y - leftBar.bar.height;
       rightBar.rect.y = rightBar.bar.y - rightBar.bar.height;
-      thisBlocked = movePlayerVertical(leftBar, rightBar);
-      if (thisBlocked) blocked = true;
+      if (!blocked) {
+        thisBlocked = movePlayerVertical(leftBar, rightBar, oldY);
+        if (thisBlocked) blocked = true;
+      }
+      i++;
     }
     if (!blocked) {
       if (player.currentAnimation !== 'falling') player.gotoAndPlay('falling');
