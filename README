@@ -1,0 +1,7 @@
+
+To get this running, you have to start up the fake data server, then the main node.js process.
+
+1. coffee fake_data
+1. coffee web
+1. http://localhost:3000
+
