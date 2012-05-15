@@ -1,7 +1,10 @@
+This project connects to a MindWave device to read your brain waves. The brain wave data is used to modify the difficulty of a simple falling platform game.
 
-To get this running, you have to start up the fake data server, then the main node.js process.
+If you lose focus while playing the game, the gaps that allow you to fall through will widen. If you fail to stay calm during the game, the speed at which the platforms scroll up increases.
+
+To get this running, you have to start up the fake data server (or connect to an actual MindWave device), then the main node.js process.
 
 1. coffee fake_data
-1. coffee web
-1. http://localhost:3000
+2. coffee web
+3. http://localhost:3000
 
