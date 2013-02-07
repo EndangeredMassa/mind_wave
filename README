@@ -10,3 +10,6 @@ To get this running, you have to start up the fake data server (or connect to an
 2. coffee web
 3. http://localhost:3000
 
+Note that this is all hackathon code. Don't look to it as examples of great code.
+
+You can find a demo here: http://www.youtube.com/watch?v=LNf2e8Z6QgM
